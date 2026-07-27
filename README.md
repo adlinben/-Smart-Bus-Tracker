@@ -1,22 +1,41 @@
-<<<<<<< HEAD
-# smartbus_tracker_new
+# Smart Bus Tracking System
 
-A new Flutter project.
+Real-time Bus Tracking System with Flutter frontend, Java backend, simulator, database, and chatbot.
 
-## Getting Started
+## Project Overview
 
-This project is a starting point for a Flutter application.
+Smart Bus Tracker helps users find buses based on:
 
-A few resources to get you started if this is your first Flutter project:
+- Source location
+- Destination
+- Preferred boarding time
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+The application displays:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-=======
-# smart-bus-tracking-system
-Real-time Bus Tracking System with Flutter, Java Simulator, Backend, mongodb and Chatbot.
->>>>>>> bde778f625d241d6e2a53f78c97bf9293c8a6d1d
+- Available buses
+- Running and scheduled buses
+- Current bus location
+- ETA information
+- Route stops
+- Live map tracking
+
+## Technologies Used
+
+### Frontend
+- Flutter
+- Dart
+- Google Maps API
+
+### Backend
+- Java REST API
+
+### Database
+- MongoDB
+
+### Simulator
+- Java based bus movement simulator
+
+### Chatbot
+- Chatbot module for user assistance
+
+## Project Structure
