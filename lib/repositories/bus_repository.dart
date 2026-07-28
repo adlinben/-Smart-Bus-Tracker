@@ -4,11 +4,7 @@ import '../services/api_service.dart';
 
 class BusRepository {
   final ApiService _apiService = ApiService();
-  Future<List<Bus>> searchBuses(
-      String source,
-      String destination,
-      String time,
-      ) async {
+  Future<List<Bus>> searchBuses(String source, String destination, String time,) async {
     final response = await _apiService.post(
       ApiConstants.searchBus,
       {

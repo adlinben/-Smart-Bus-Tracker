@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
-  runApp(const SmartBusTracker());
-}
+  runApp(const SmartBusTracker());}
 class SmartBusTracker extends StatelessWidget {
   const SmartBusTracker({super.key});
   @override

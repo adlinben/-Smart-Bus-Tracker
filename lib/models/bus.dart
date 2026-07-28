@@ -72,6 +72,8 @@ class Bus {
       lastUpdated: json['lastUpdated'] ?? '',
       source: json['source'] ?? '',
       destination: json['destination'] ?? '',
+      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
 
       routeStops: (json['routeStops'] as List<dynamic>?)
           ?.map(
@@ -79,10 +81,7 @@ class Bus {
           e as Map<String, dynamic>,
         ),
       )
-          .toList() ??
-          [],
-      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+          .toList() ?? [],
     );
   }
 }

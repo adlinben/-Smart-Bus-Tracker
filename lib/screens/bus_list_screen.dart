@@ -6,8 +6,7 @@ class BusListScreen extends StatelessWidget {
   final List<Bus> buses;
   final String source;
   final String destination;
-  const BusListScreen({
-    super.key,
+  const BusListScreen({super.key,
     required this.buses,
     required this.source,
     required this.destination,
@@ -25,27 +24,17 @@ class BusListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Available Buses"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20),
-          const Center(
-            child: Text(
-              "Journey",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+      body: Column(crossAxisAlignment: CrossAxisAlignment.start,
+        children: [const SizedBox(height: 20),
+            const Center(
+            child: Text("Journey",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
               ),
             ),
           ),
           const SizedBox(height: 10),
-          Center(
-            child: Text(
-              "$source → $destination",
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
+          Center(child: Text("$source → $destination",
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.red,
               ),
             ),
           ),
@@ -55,17 +44,9 @@ class BusListScreen extends StatelessWidget {
             child: ListView(
               children: [
                 if (runningBuses.isNotEmpty) ...[
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Text(
-                      "Running Buses",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8,),
+                    child: Text("Running Buses",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green,
                       ),
                     ),
                   ),
@@ -74,17 +55,9 @@ class BusListScreen extends StatelessWidget {
                   ),
                 ],
                 if (scheduledBuses.isNotEmpty) ...[
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Text(
-                      "Scheduled Buses",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8,),
+                    child: Text("Scheduled Buses",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue,
                       ),
                     ),
                   ),
