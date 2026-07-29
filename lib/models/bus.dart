@@ -1,7 +1,7 @@
 import 'route_stop.dart';
 
 class Bus {
-  final int busId;
+  final String busId;
   final String busNumber;
   final String status;
   final double speed;
@@ -46,43 +46,32 @@ class Bus {
     required this.latitude,
     required this.longitude,
   });
-
-  factory Bus.fromJson(Map<String, dynamic> json) {
+  factory Bus.fromJson(Map<String,dynamic> json){
     return Bus(
-      busId: json['busId'] ?? 0,
-      busNumber: json['busNumber'] ?? '',
-      status: json['status'] ?? '',
+      busId: json['busId'] ?? "",
+      busNumber: json['busNumber'] ?? "",
+      status: json['status'] ?? "",
       speed: (json['speed'] as num?)?.toDouble() ?? 0.0,
-      currentStop: json['currentStop'] ?? '',
-      nextStop: json['nextStop'] ?? '',
-      distanceToNextStop:
-      (json['distanceToNextStop'] as num?)?.toDouble() ?? 0.0,
-      remainingDistanceToSource:
-      (json['remainingDistanceToSource'] as num?)?.toDouble() ?? 0.0,
-      etaToSource: json['etaToSource'] ?? '',
-      remainingDistanceToDestination:
-      (json['remainingDistanceToDestination'] as num?)?.toDouble() ?? 0.0,
-      etaToDestination: json['etaToDestination'] ?? '',
-      startingFrom: json['startingFrom'] ?? '',
-      departureTime: json['departureTime'] ?? '',
-      busArrivalTimeAtSource:
-      json['busArrivalTimeAtSource'] ?? '',
-      busDestinationArrivalTime:
-      json['busDestinationArrivalTime'] ?? '',
-      lastUpdated: json['lastUpdated'] ?? '',
-      source: json['source'] ?? '',
-      destination: json['destination'] ?? '',
+      currentStop: json['currentStop'] ?? "",
+      nextStop: json['nextStop'] ?? "",
+      distanceToNextStop: (json['distanceToNextStop'] as num?)?.toDouble() ?? 0.0,
+      remainingDistanceToSource: (json['remainingDistanceToSource'] as num?)?.toDouble() ?? 0.0,
+      etaToSource: json['etaToSource'] ?? "",
+      remainingDistanceToDestination: (json['remainingDistanceToDestination'] as num?)?.toDouble() ?? 0.0,
+      etaToDestination: json['etaToDestination'] ?? "",
+      startingFrom: json['startingFrom'] ?? "",
+      departureTime: json['departureTime'] ?? "",
+      busArrivalTimeAtSource: json['busArrivalTimeAtSource'] ?? "",
+      busDestinationArrivalTime: json['busDestinationArrivalTime'] ?? "",
+      lastUpdated: json['lastUpdated'] ?? "",
+      source: json['source'] ?? "",
+      destination: json['destination'] ?? "",
       latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
-
       routeStops: (json['routeStops'] as List<dynamic>?)
           ?.map(
-            (e) => RouteStop.fromJson(
-          e as Map<String, dynamic>,
-        ),
-      )
-          .toList() ?? [],
+            (e)=>RouteStop.fromJson(e),
+      ).toList() ?? [],
     );
   }
 }
-

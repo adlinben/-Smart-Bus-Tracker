@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../config/api_constants.dart';
 
 class ApiService {
-  Future<List<dynamic>> post(String endpoint, Map<String, dynamic> body,) async {
+  Future<dynamic> post(String endpoint, Map<String, dynamic> body,) async {
     final response = await http.post(
       Uri.parse(ApiConstants.baseUrl + endpoint),
       headers: {"Content-Type": "application/json",},

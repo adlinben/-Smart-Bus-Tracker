@@ -8,9 +8,9 @@ class BusRepository {
     final response = await _apiService.post(
       ApiConstants.searchBus,
       {
-        "currentLocation": source,
-        "destination": destination,
-        "time": time,
+        "boardingStop": source,
+        "destinationStop": destination,
+        "travelTime": time,
       },
     );
     return (response as List)
@@ -18,3 +18,4 @@ class BusRepository {
         .toList();
   }
 }
+
