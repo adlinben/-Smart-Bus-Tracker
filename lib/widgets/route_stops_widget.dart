@@ -13,9 +13,11 @@ class RouteStopsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (bus.routeStops.isEmpty) {
-      return const Padding(padding: EdgeInsets.symmetric(vertical: 10),
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: Text("No stop schedule details available.",
-          style: TextStyle(color: Colors.grey),),
+          style: TextStyle(color: Colors.grey),
+        ),
       );
     }
     return ListView.builder(
@@ -25,19 +27,20 @@ class RouteStopsWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         final stop = bus.routeStops[index];
         final bool isLast = index == bus.routeStops.length - 1;
-        final bool isCurrentStop = isRunning && bus.currentStop.toLowerCase() == stop.stopName.toLowerCase();
-
+        final bool isCurrent = stop.eta.toUpperCase() == "CURRENT";
+        final bool isPassed = stop.eta.toUpperCase() == "PASSED";
         return IntrinsicHeight(
           child: Row(crossAxisAlignment: CrossAxisAlignment.start,
-            children: [Column(
-                children: [
-                  Icon(isCurrentStop ? Icons.location_on : Icons.radio_button_unchecked,
-                    color: isCurrentStop ? Colors.green : Colors.grey,
+            children: [
+              Column(children: [
+                  Icon(
+                    isCurrent ? Icons.location_on : isPassed ? Icons.check_circle : Icons.radio_button_unchecked,
+                    color: isCurrent ? Colors.green : isPassed ? Colors.grey : Colors.blue,
                     size: 22,
                   ),
+
                   if (!isLast)
-                    Container(width: 2, height: 70, color: Colors.grey,
-                    ),
+                    Container(width: 2, height: 70, color: Colors.grey,),
                 ],
               ),
               const SizedBox(width: 15),
@@ -47,19 +50,19 @@ class RouteStopsWidget extends StatelessWidget {
                     children: [
                       Text(stop.stopName,
                         style: TextStyle(fontSize: 17,
-                          fontWeight: isCurrentStop ? FontWeight.bold : FontWeight.w500,
-                          color: isCurrentStop ? Colors.green : Colors.blue,),),
+                          fontWeight: isCurrent ? FontWeight.bold : FontWeight.w500,
+                          color: isCurrent ? Colors.green : Colors.blue,),),
+                      const SizedBox(height: 5),
+
+                      Text("ETA : ${stop.eta}",),
                       const SizedBox(height: 4),
-                      if (isCurrentStop)
-                        const Text("Current Stop",
-                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold,),)
-                      else ...[
+
+                      if (!isPassed)
                         Text("Remaining Distance : ${stop.remainingDistance} km",
-                          style: const TextStyle(fontSize: 13),),
-                        Text("ETA : ${stop.eta}",
-                          style: const TextStyle(fontSize: 13),
+                          style: const TextStyle(
+                            fontSize: 13,
+                          ),
                         ),
-                      ],
                     ],
                   ),
                 ),

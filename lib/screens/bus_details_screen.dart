@@ -31,7 +31,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
           (_) => _loadBus(),
     );
   }
-
   Future<void> _loadBus() async {
     try {
       final buses = await _repository.searchBuses(
@@ -39,12 +38,10 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
         bus.destinationStop,
         bus.departureTime,
       );
-
       final updatedBus = buses.firstWhere(
             (b) => b.busId == bus.busId,
         orElse: () => bus,
       );
-
       if (!mounted) return;
       setState(() {
         bus = updatedBus;
@@ -58,45 +55,52 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
     _timer?.cancel();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final status = bus.status.toUpperCase();
-    final isRunning = status == "RUNNING";
-    final isScheduled = status == "SCHEDULED";
+    final bool isRunning = status == "RUNNING";
+    final bool isWaiting = status.contains("WAITING");
+    final bool isScheduled = status == "SCHEDULED";
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Bus Details"),),
+      appBar: AppBar(
+        title: const Text("Bus Details"),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text("Bus Number : ${bus.busNumber}",
+          children: [
+            Text("Bus Number : ${bus.busNumber}",
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold,),),
             const SizedBox(height: 10),
             Text("Journey : ${bus.boardingStop} → ${bus.destinationStop}",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.red,),),
             const Divider(height: 30),
             Text("Status : ${bus.status}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isRunning ? Colors.green : Colors.blue,),),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,
+                color: isRunning ? Colors.green : isWaiting ? Colors.orange : Colors.blue,
+              ),
+            ),
             const SizedBox(height: 20),
-            if (isRunning)
+            if (isRunning || isWaiting)
               RunningBusDetails(bus: bus),
             if (isScheduled)
               ScheduledBusDetails(bus: bus),
+
             const SizedBox(height: 20),
             Text("Last Updated : ${bus.lastUpdated}",),
             const SizedBox(height: 25),
             const Text("Route Stops",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),),
-
             const Divider(),
+
             RouteStopsWidget(
               bus: bus,
-              isRunning: isRunning,
+              isRunning: isRunning || isWaiting,
             ),
-            const SizedBox(height: 30),
 
-            if (isRunning && bus.latitude != 0 && bus.longitude != 0)
+            const SizedBox(height: 30),
+            if ((isRunning || isWaiting) && bus.latitude != 0 && bus.longitude != 0)
               Center(
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.map),
