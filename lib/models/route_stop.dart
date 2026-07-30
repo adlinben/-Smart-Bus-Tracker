@@ -12,9 +12,7 @@ class RouteStop {
   factory RouteStop.fromJson(Map<String,dynamic> json){
     return RouteStop(
       stopName: json["stopName"] ?? "",
-      remainingDistance:
-      (json["remainingDistance"] as num?)?.toDouble() ?? 0.0,
-
+      remainingDistance: (json["remainingDistance"] as num?)?.toDouble() ?? 0.0,
       eta: json["eta"] ?? "",
 
     );

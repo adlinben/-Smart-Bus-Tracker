@@ -5,8 +5,7 @@ import '../config/api_constants.dart';
 class ApiService {
 
   Future<dynamic> post(String endpoint, Map<String, dynamic> body,) async {
-  final response = await http.post(
-  Uri.parse(ApiConstants.baseUrl + endpoint),
+  final response = await http.post(Uri.parse(ApiConstants.baseUrl + endpoint),
   headers: {"Content-Type": "application/json",},
   body: jsonEncode(body),)
       .timeout(const Duration(seconds: 15));
