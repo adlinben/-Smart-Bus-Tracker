@@ -8,20 +8,27 @@ class Bus {
   final String currentStop;
   final String nextStop;
   final double distanceToNextStop;
-  final double remainingDistanceToSource;
-  final String etaToSource;
+  // Passenger's selected boarding stop
+  final String boardingStop;
+  // Passenger's selected destination
+  final String destinationStop;
+  // Distance & ETA to boarding stop
+  final double remainingDistanceToBoardingStop;
+  final String etaToBoardingStop;
+  // Distance & ETA to destination
   final double remainingDistanceToDestination;
-  final String etaToDestination;
+  final String etaToDestinationStop;
+  // Schedule details
   final String startingFrom;
   final String departureTime;
-  final String busArrivalTimeAtSource;
-  final String busDestinationArrivalTime;
+  final String busArrivalTimeAtBoardingStop;
+  final String busArrivalTimeAtDestinationStop;
   final String lastUpdated;
-  final String source;
-  final String destination;
-  final List<RouteStop> routeStops;
+  // Live location
   final double latitude;
   final double longitude;
+  // Route
+  final List<RouteStop> routeStops;
 
   Bus({
     required this.busId,
@@ -31,47 +38,48 @@ class Bus {
     required this.currentStop,
     required this.nextStop,
     required this.distanceToNextStop,
-    required this.remainingDistanceToSource,
-    required this.etaToSource,
+    required this.boardingStop,
+    required this.destinationStop,
+    required this.remainingDistanceToBoardingStop,
+    required this.etaToBoardingStop,
     required this.remainingDistanceToDestination,
-    required this.etaToDestination,
+    required this.etaToDestinationStop,
     required this.startingFrom,
     required this.departureTime,
-    required this.busArrivalTimeAtSource,
-    required this.busDestinationArrivalTime,
+    required this.busArrivalTimeAtBoardingStop,
+    required this.busArrivalTimeAtDestinationStop,
     required this.lastUpdated,
-    required this.source,
-    required this.destination,
-    required this.routeStops,
     required this.latitude,
     required this.longitude,
+    required this.routeStops,
   });
-  factory Bus.fromJson(Map<String,dynamic> json){
+
+  factory Bus.fromJson(Map<String, dynamic> json) {
     return Bus(
-      busId: json['busId'] ?? "",
-      busNumber: json['busNumber'] ?? "",
-      status: json['status'] ?? "",
-      speed: (json['speed'] as num?)?.toDouble() ?? 0.0,
-      currentStop: json['currentStop'] ?? "",
-      nextStop: json['nextStop'] ?? "",
-      distanceToNextStop: (json['distanceToNextStop'] as num?)?.toDouble() ?? 0.0,
-      remainingDistanceToSource: (json['remainingDistanceToSource'] as num?)?.toDouble() ?? 0.0,
-      etaToSource: json['etaToSource'] ?? "",
-      remainingDistanceToDestination: (json['remainingDistanceToDestination'] as num?)?.toDouble() ?? 0.0,
-      etaToDestination: json['etaToDestination'] ?? "",
-      startingFrom: json['startingFrom'] ?? "",
-      departureTime: json['departureTime'] ?? "",
-      busArrivalTimeAtSource: json['busArrivalTimeAtSource'] ?? "",
-      busDestinationArrivalTime: json['busDestinationArrivalTime'] ?? "",
-      lastUpdated: json['lastUpdated'] ?? "",
-      source: json['source'] ?? "",
-      destination: json['destination'] ?? "",
-      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
-      routeStops: (json['routeStops'] as List<dynamic>?)
-          ?.map(
-            (e)=>RouteStop.fromJson(e),
-      ).toList() ?? [],
+      busId: json["busId"] ?? "",
+      busNumber: json["busNumber"] ?? "",
+      status: json["status"] ?? "",
+      speed: (json["speed"] as num?)?.toDouble() ?? 0.0,
+      currentStop: json["currentStop"] ?? "",
+      nextStop: json["nextStop"] ?? "",
+      distanceToNextStop: (json["distanceToNextStop"] as num?)?.toDouble() ?? 0.0,
+      boardingStop: json["boardingStop"] ?? "",
+      destinationStop: json["destinationStop"] ?? "",
+      remainingDistanceToBoardingStop: (json["remainingDistanceToBoardingStop"] as num?)?.toDouble() ?? 0.0,
+      etaToBoardingStop: json["etaToBoardingStop"] ?? "",
+      remainingDistanceToDestination: (json["remainingDistanceToDestination"] as num?)?.toDouble() ?? 0.0,
+      etaToDestinationStop: json["etaToDestinationStop"] ?? "",
+      startingFrom: json["startingFrom"] ?? "",
+      departureTime: json["departureTime"] ?? "",
+      busArrivalTimeAtBoardingStop: json["busArrivalTimeAtBoardingStop"] ?? "",
+      busArrivalTimeAtDestinationStop: json["busArrivalTimeAtDestinationStop"] ?? "",
+      lastUpdated: json["lastUpdated"] ?? "",
+      latitude: (json["latitude"] as num?)?.toDouble() ?? 0.0,
+      longitude: (json["longitude"] as num?)?.toDouble() ?? 0.0,
+      routeStops: (json["routeStops"] as List<dynamic>?)
+          ?.map((e) => RouteStop.fromJson(e))
+          .toList() ??
+          [],
     );
   }
 }

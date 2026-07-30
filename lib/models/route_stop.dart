@@ -1,15 +1,22 @@
 class RouteStop {
 
   final String stopName;
-  final double distance;
+  final double remainingDistance;
+  final String eta;
   RouteStop({
     required this.stopName,
-    required this.distance,
+    required this.remainingDistance,
+    required this.eta,
   });
+
   factory RouteStop.fromJson(Map<String,dynamic> json){
     return RouteStop(
-      stopName: json['stopName'] ?? "",
-      distance: (json['distance'] as num?)?.toDouble() ?? 0.0,
+      stopName: json["stopName"] ?? "",
+      remainingDistance:
+      (json["remainingDistance"] as num?)?.toDouble() ?? 0.0,
+
+      eta: json["eta"] ?? "",
+
     );
   }
 }
