@@ -8,26 +8,19 @@ class Bus {
   final String currentStop;
   final String nextStop;
   final double distanceToNextStop;
-  // Passenger's selected boarding stop
   final String boardingStop;
-  // Passenger's selected destination
   final String destinationStop;
-  // Distance & ETA to boarding stop
   final double remainingDistanceToBoardingStop;
   final String etaToBoardingStop;
-  // Distance & ETA to destination
   final double remainingDistanceToDestination;
   final String etaToDestinationStop;
-  // Schedule details
   final String startingFrom;
   final String departureTime;
   final String busArrivalTimeAtBoardingStop;
   final String busArrivalTimeAtDestinationStop;
   final String lastUpdated;
-  // Live location
   final double latitude;
   final double longitude;
-  // Route
   final List<RouteStop> routeStops;
 
   Bus({

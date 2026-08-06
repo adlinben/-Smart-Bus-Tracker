@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "170672521014",
+    "project_id": "smart-bus-tracker-a2e2f",
+    "storage_bucket": "smart-bus-tracker-a2e2f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170672521014:android:56942fb163534783a77d97",
+        "android_client_info": {
+          "package_name": "com.example.smartbus_tracker_new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBygXJJOqrYwTM6NtEsJEKdxOUcTAg2ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
