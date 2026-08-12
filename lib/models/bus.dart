@@ -1,5 +1,4 @@
 import 'route_stop.dart';
-
 class Bus {
   final String busId;
   final String busNumber;

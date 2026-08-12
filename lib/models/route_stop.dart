@@ -1,5 +1,4 @@
 class RouteStop {
-
   final String stopName;
   final double remainingDistance;
   final String eta;

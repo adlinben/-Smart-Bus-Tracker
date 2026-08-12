@@ -8,35 +8,113 @@ class RunningBusDetails extends StatelessWidget {
     required this.bus,
   });
 
+  static const Color primaryRed = Color(0xFFC62828);
+  static const Color textPrimary = Color(0xFF1F2937);
+  static const Color textSecondary = Color(0xFF6B7280);
+  static const Color borderColor = Color(0xFFE5E7EB);
+
   @override
   Widget build(BuildContext context) {
     final bool isWaiting = bus.status.toUpperCase().contains("WAITING");
-    return Column(crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text(
-          isWaiting ? "Waiting Bus Details" : "Running Bus Details",
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.indigo,),),
-        const SizedBox(height: 15),
-        Text("Current Stop : ${bus.currentStop}"),
+    final Color statusColor = isWaiting ? Colors.orange : Colors.green;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11,),
+          decoration: BoxDecoration(
+            color: statusColor.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: statusColor.withOpacity(0.15),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(width: 34, height: 34,
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(0.10),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isWaiting ? Icons.pause_circle_outline_rounded : Icons.directions_bus_rounded,
+                  size: 19, color: statusColor,),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(isWaiting ? "Bus is waiting at ${bus.currentStop}" : "Bus is currently near ${bus.currentStop}",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+                    color: isWaiting ? Colors.orange.shade800 : Colors.green.shade800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        const Text("Live status",
+          style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary,),
+        ),
         const SizedBox(height: 10),
-        if (isWaiting)
-          const Text("Bus is currently waiting at this stop",
-            style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 16,),),
+        _detailRow("Current stop", bus.currentStop,),
+        _detailRow("Next stop", bus.nextStop,),
+        _detailRow("Speed", "${bus.speed} km/hr",),
+        _detailRow("Distance to next stop", "${bus.distanceToNextStop} km",),
+        const SizedBox(height: 5),
+        const Divider(
+          height: 1, color: borderColor,),
+        const SizedBox(height: 16),
+        const Text("Your boarding stop",
+          style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary,),
+        ),
         const SizedBox(height: 10),
-        Text("Next Stop : ${bus.nextStop}"),
+        _detailRow("Stop", bus.boardingStop,),
+        _detailRow("ETA", bus.etaToBoardingStop, valueColor: primaryRed,),
+        _detailRow("Arrival", bus.busArrivalTimeAtBoardingStop, valueColor: primaryRed,),
+        const SizedBox(height: 5),
+        const Divider(height: 1, color: borderColor,),
+        const SizedBox(height: 16),
+        const Text("Destination",
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary,),
+        ),
         const SizedBox(height: 10),
-        Text("Speed : ${bus.speed} km/hr"),
-        const SizedBox(height: 10),
-        Text("Distance to Next Stop : ${bus.distanceToNextStop} km",),
-        const SizedBox(height: 10),
-        Text("ETA to ${bus.boardingStop} : ${bus.etaToBoardingStop}",),
-        const SizedBox(height: 10),
-        Text("Arrival at ${bus.boardingStop} : ${bus.busArrivalTimeAtBoardingStop}",),
-        const SizedBox(height: 10),
-        Text("Remaining Distance to ${bus.destinationStop} : ${bus.remainingDistanceToDestination} km",),
-        const SizedBox(height: 10),
-        Text("ETA to ${bus.destinationStop} : ${bus.etaToDestinationStop}",),
-        const SizedBox(height: 10),
-        Text("Arrival at ${bus.destinationStop} : ${bus.busArrivalTimeAtDestinationStop}",),],
+        _detailRow("Stop", bus.destinationStop,),
+        _detailRow("Remaining distance", "${bus.remainingDistanceToDestination} km",),
+        _detailRow("ETA", bus.etaToDestinationStop, valueColor: primaryRed,),
+        _detailRow("Arrival", bus.busArrivalTimeAtDestinationStop, valueColor: primaryRed,),
+      ],
+    );
+  }
+  Widget _detailRow(
+      String label,
+      String value, {
+        Color? valueColor,
+      }) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 10,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2, child: Text(
+              label, style: const TextStyle(color: textSecondary, fontSize: 12,),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 3, child: Text(value,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w700, color: valueColor ?? textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
