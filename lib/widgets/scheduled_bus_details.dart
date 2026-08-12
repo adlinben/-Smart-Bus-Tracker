@@ -3,7 +3,6 @@ import '../models/bus.dart';
 
 class ScheduledBusDetails extends StatelessWidget {
   final Bus bus;
-
   const ScheduledBusDetails({
     super.key,
     required this.bus,

@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import '../models/bus.dart';
 import '../repositories/bus_repository.dart';
 import '../theme/app_theme.dart';
@@ -36,9 +34,8 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
 
     _loadBus();
 
-    // Refresh live information every 5 minutes.
     _timer = Timer.periodic(
-      const Duration(minutes: 5),
+      const Duration(seconds: 30),
           (_) => _loadBus(),
     );
   }
@@ -127,22 +124,12 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ==================================================
-              // BUS HEADER
-              // ==================================================
-
               _buildBusHeader(
                 statusColor: statusColor,
                 statusBackground: statusBackground,
                 displayStatus: displayStatus,
               ),
-
               const SizedBox(height: 10),
-
-              // ==================================================
-              // QUICK ETA CARD
-              // ==================================================
-
               _buildQuickEtaCard(
                 statusColor: statusColor,
                 isRunning: isRunning,
@@ -151,11 +138,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               ),
 
               const SizedBox(height: 10),
-
-              // ==================================================
-              // LIVE INFORMATION
-              // ==================================================
-
               _section(
                 title: isScheduled
                     ? "Trip Information"
@@ -169,11 +151,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               ),
 
               const SizedBox(height: 10),
-
-              // ==================================================
-              // ROUTE
-              // ==================================================
-
               _section(
                 title: "Route",
                 icon: Icons.route_rounded,
@@ -184,21 +161,10 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               ),
 
               const SizedBox(height: 10),
-
-              // ==================================================
-              // LIVE MAP
-              // ==================================================
-
               if (hasLiveLocation)
                 _buildMapButton(context),
-
               if (hasLiveLocation)
                 const SizedBox(height: 10),
-
-              // ==================================================
-              // LAST UPDATED
-              // ==================================================
-
               _buildLastUpdated(),
             ],
           ),
@@ -206,11 +172,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
-  // ==============================================================
-  // BUS HEADER
-  // ==============================================================
-
   Widget _buildBusHeader({
     required Color statusColor,
     required Color statusBackground,
@@ -347,11 +308,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
-  // ==============================================================
-  // ROUTE POINT
-  // ==============================================================
-
   Widget _routePoint({
     required String label,
     required String value,
@@ -389,11 +345,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ],
     );
   }
-
-  // ==============================================================
-  // QUICK ETA
-  // ==============================================================
-
   Widget _buildQuickEtaCard({
     required Color statusColor,
     required bool isRunning,
@@ -503,11 +454,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
-  // ==============================================================
-  // SECTION
-  // ==============================================================
-
   Widget _section({
     required String title,
     required IconData icon,
@@ -554,11 +500,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
-  // ==============================================================
-  // MAP BUTTON
-  // ==============================================================
-
   Widget _buildMapButton(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -595,11 +536,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
-  // ==============================================================
-  // LAST UPDATED
-  // ==============================================================
-
   Widget _buildLastUpdated() {
     return Padding(
       padding: const EdgeInsets.symmetric(

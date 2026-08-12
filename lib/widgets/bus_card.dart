@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/bus.dart';
 import '../screens/bus_details_screen.dart';
 import '../theme/app_theme.dart';
@@ -17,7 +16,6 @@ class BusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = bus.status.toUpperCase();
-
     final bool isRunning = status == "RUNNING";
     final bool isWaiting = status.contains("WAITING");
     final bool isScheduled = status == "SCHEDULED";
@@ -76,11 +74,6 @@ class BusCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-              // ==========================================
-              // RECOMMENDED
-              // ==========================================
-
               if (recommended) ...[
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -114,11 +107,6 @@ class BusCard extends StatelessWidget {
 
                 const SizedBox(height: 12),
               ],
-
-              // ==========================================
-              // BUS HEADER
-              // ==========================================
-
               Row(
                 children: [
                   Container(
@@ -134,9 +122,7 @@ class BusCard extends StatelessWidget {
                       size: 23,
                     ),
                   ),
-
                   const SizedBox(width: 11),
-
                   Expanded(
                     child: Column(
                       crossAxisAlignment:
@@ -161,7 +147,6 @@ class BusCard extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   _statusBadge(
                     statusText,
                     statusColor,
@@ -169,13 +154,7 @@ class BusCard extends StatelessWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 15),
-
-              // ==========================================
-              // CURRENT LOCATION
-              // ==========================================
-
               if (isRunning || isWaiting)
                 Container(
                   width: double.infinity,
@@ -193,9 +172,7 @@ class BusCard extends StatelessWidget {
                         size: 19,
                         color: statusColor,
                       ),
-
                       const SizedBox(width: 8),
-
                       Expanded(
                         child: Column(
                           crossAxisAlignment:
@@ -225,27 +202,15 @@ class BusCard extends StatelessWidget {
                     ],
                   ),
                 ),
-
               if (isRunning || isWaiting)
                 const SizedBox(height: 13),
-
-              // ==========================================
-              // YOUR BOARDING ETA
-              // ==========================================
-
               _etaBox(
                 title: "YOUR BOARDING STOP",
                 stopName: bus.boardingStop,
                 time: bus.busArrivalTimeAtBoardingStop,
                 color: AppTheme.primaryRed,
               ),
-
               const SizedBox(height: 10),
-
-              // ==========================================
-              // DESTINATION
-              // ==========================================
-
               Row(
                 children: [
                   const Icon(
@@ -253,9 +218,7 @@ class BusCard extends StatelessWidget {
                     size: 17,
                     color: AppTheme.textSecondary,
                   ),
-
                   const SizedBox(width: 7),
-
                   Expanded(
                     child: Text(
                       bus.destinationStop,
@@ -265,7 +228,6 @@ class BusCard extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   Text(
                     bus.busArrivalTimeAtDestinationStop,
                     style: const TextStyle(
@@ -276,14 +238,8 @@ class BusCard extends StatelessWidget {
                   ),
                 ],
               ),
-
-              // ==========================================
-              // SCHEDULED DEPARTURE
-              // ==========================================
-
               if (isScheduled) ...[
                 const SizedBox(height: 9),
-
                 Row(
                   children: [
                     const Icon(
@@ -312,20 +268,12 @@ class BusCard extends StatelessWidget {
                   ],
                 ),
               ],
-
               const SizedBox(height: 14),
-
               const Divider(
                 height: 1,
                 color: AppTheme.border,
               ),
-
               const SizedBox(height: 10),
-
-              // ==========================================
-              // DETAILS
-              // ==========================================
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -351,16 +299,13 @@ class BusCard extends StatelessWidget {
       ),
     );
   }
-
   Widget _statusBadge(
       String text,
       Color color,
       Color background,
       ) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 5,
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5,
       ),
       decoration: BoxDecoration(
         color: background,
@@ -369,20 +314,16 @@ class BusCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 6,
-            height: 6,
+          Container(width: 6, height: 6,
             decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
+              color: color, shape: BoxShape.circle,
             ),
           ),
           const SizedBox(width: 5),
           Text(
             text,
             style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
+              fontSize: 10, fontWeight: FontWeight.w800,
               color: color,
             ),
           ),
@@ -390,7 +331,6 @@ class BusCard extends StatelessWidget {
       ),
     );
   }
-
   Widget _etaBox({
     required String title,
     required String stopName,
@@ -421,13 +361,10 @@ class BusCard extends StatelessWidget {
             ),
             child: Icon(
               Icons.access_time_rounded,
-              size: 17,
-              color: color,
+              size: 17, color: color,
             ),
           ),
-
           const SizedBox(width: 9),
-
           Expanded(
             child: Column(
               crossAxisAlignment:
@@ -436,8 +373,7 @@ class BusCard extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 9, fontWeight: FontWeight.w800,
                     color: color,
                   ),
                 ),
@@ -445,21 +381,17 @@ class BusCard extends StatelessWidget {
                 Text(
                   stopName,
                   style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 12, fontWeight: FontWeight.w600,
                     color: AppTheme.textPrimary,
                   ),
                 ),
               ],
             ),
           ),
-
           Text(
             time,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              color: color,
+            style: TextStyle(fontSize: 14,
+              fontWeight: FontWeight.w800, color: color,
             ),
           ),
         ],

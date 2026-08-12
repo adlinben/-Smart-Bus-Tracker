@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../models/bus.dart';
 import '../theme/app_theme.dart';
 
 class RouteStopsWidget extends StatelessWidget {
   final Bus bus;
   final bool isRunning;
-
   const RouteStopsWidget({
     super.key,
     required this.bus,
@@ -26,9 +24,7 @@ class RouteStopsWidget extends StatelessWidget {
         child: const Row(
           children: [
             Icon(
-              Icons.route_outlined,
-              size: 20,
-              color: AppTheme.textMuted,
+              Icons.route_outlined, size: 20, color: AppTheme.textMuted,
             ),
             SizedBox(width: 10),
             Expanded(
@@ -51,21 +47,11 @@ class RouteStopsWidget extends StatelessWidget {
       itemCount: bus.routeStops.length,
       itemBuilder: (context, index) {
         final stop = bus.routeStops[index];
-
-        final bool isLast =
-            index == bus.routeStops.length - 1;
-
-        final String etaValue =
-        stop.eta.trim().toUpperCase();
-
-        final bool isCurrent =
-            etaValue == "CURRENT";
-
-        final bool isPassed =
-            etaValue == "PASSED";
-
-        final bool isFuture =
-            !isCurrent && !isPassed;
+        final bool isLast = index == bus.routeStops.length - 1;
+        final String etaValue = stop.eta.trim().toUpperCase();
+        final bool isCurrent = etaValue == "CURRENT";
+        final bool isPassed = etaValue == "PASSED";
+        final bool isFuture = !isCurrent && !isPassed;
 
         return _buildStop(
           stop: stop,
@@ -78,11 +64,6 @@ class RouteStopsWidget extends StatelessWidget {
       },
     );
   }
-
-  // ==============================================================
-  // STOP
-  // ==============================================================
-
   Widget _buildStop({
     required dynamic stop,
     required int index,
@@ -92,7 +73,6 @@ class RouteStopsWidget extends StatelessWidget {
     required bool isFuture,
   }) {
     final Color pointColor;
-
     if (isCurrent) {
       pointColor = AppTheme.running;
     } else if (isPassed) {
@@ -105,15 +85,10 @@ class RouteStopsWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ======================================================
-          // TIMELINE
-          // ======================================================
-
           SizedBox(
             width: 32,
             child: Column(
               children: [
-                // Timeline point
                 Container(
                   width: isCurrent ? 28 : 22,
                   height: isCurrent ? 28 : 22,
@@ -141,8 +116,6 @@ class RouteStopsWidget extends StatelessWidget {
                     color: pointColor,
                   ),
                 ),
-
-                // Connecting line
                 if (!isLast)
                   Expanded(
                     child: Container(
@@ -160,11 +133,6 @@ class RouteStopsWidget extends StatelessWidget {
           ),
 
           const SizedBox(width: 10),
-
-          // ======================================================
-          // STOP CONTENT
-          // ======================================================
-
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(
@@ -191,7 +159,6 @@ class RouteStopsWidget extends StatelessWidget {
                   crossAxisAlignment:
                   CrossAxisAlignment.start,
                   children: [
-                    // Stop information
                     Expanded(
                       child: Column(
                         crossAxisAlignment:
@@ -218,9 +185,7 @@ class RouteStopsWidget extends StatelessWidget {
                                   : AppTheme.textPrimary,
                             ),
                           ),
-
                           const SizedBox(height: 3),
-
                           Text(
                             _getStopStatus(stop.eta),
                             style: TextStyle(
@@ -235,28 +200,20 @@ class RouteStopsWidget extends StatelessWidget {
                                   : AppTheme.textSecondary,
                             ),
                           ),
-
-                          if (!isPassed &&
-                              stop.remainingDistance > 0) ...[
+                          if (!isPassed && stop.remainingDistance > 0) ...[
                             const SizedBox(height: 3),
-
                             Row(
                               children: [
                                 const Icon(
-                                  Icons
-                                      .near_me_outlined,
-                                  size: 12,
-                                  color:
-                                  AppTheme.textMuted,
+                                  Icons.near_me_outlined,
+                                  size: 12, color: AppTheme.textMuted,
                                 ),
                                 const SizedBox(width: 3),
                                 Text(
                                   "${stop.remainingDistance} km away",
                                   style:
                                   const TextStyle(
-                                    fontSize: 10,
-                                    color:
-                                    AppTheme.textMuted,
+                                    fontSize: 10, color: AppTheme.textMuted,
                                   ),
                                 ),
                               ],
@@ -265,8 +222,6 @@ class RouteStopsWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-
-                    // ETA
                     if (isFuture)
                       _etaBadge(
                         stop.eta,
@@ -280,11 +235,6 @@ class RouteStopsWidget extends StatelessWidget {
       ),
     );
   }
-
-  // ==============================================================
-  // ETA BADGE
-  // ==============================================================
-
   Widget _etaBadge(String eta) {
     return Container(
       margin: const EdgeInsets.only(
@@ -299,31 +249,20 @@ class RouteStopsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        eta,
-        style: const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w800,
-          color: AppTheme.primaryRed,
+        eta, style: const TextStyle(
+          fontSize: 10, fontWeight: FontWeight.w800, color: AppTheme.primaryRed,
         ),
       ),
     );
   }
-
-  // ==============================================================
-  // STATUS TEXT
-  // ==============================================================
-
   String _getStopStatus(String eta) {
     final value = eta.trim().toUpperCase();
-
     if (value == "CURRENT") {
       return "Bus is here";
     }
-
     if (value == "PASSED") {
       return "Passed";
     }
-
     return "Expected arrival";
   }
 }

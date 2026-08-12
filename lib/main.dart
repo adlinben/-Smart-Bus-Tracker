@@ -10,7 +10,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,);
-
   FirebaseMessaging.onBackgroundMessage(
     firebaseMessagingBackgroundHandler,);
   await NotificationService.initialize();
@@ -19,7 +18,6 @@ Future<void> main() async {
 
 class SmartBusTracker extends StatelessWidget {
   const SmartBusTracker({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import '../models/bus.dart';
 import '../repositories/bus_repository.dart';
 import '../theme/app_theme.dart';
@@ -27,16 +25,13 @@ class _BusListScreenState extends State<BusListScreen> {
   final BusRepository _repository = BusRepository();
 
   List<Bus> buses = [];
-
   Timer? _timer;
-
   int selectedTab = 0;
 
   bool isLoading = true;
   bool isRefreshing = false;
 
   String? errorMessage;
-
   DateTime? lastUpdated;
 
   @override
@@ -45,17 +40,11 @@ class _BusListScreenState extends State<BusListScreen> {
 
     _loadBuses();
 
-    // Automatically refresh every 5 minutes.
     _timer = Timer.periodic(
-      const Duration(minutes: 5),
+      const Duration(seconds: 30),
           (_) => _loadBuses(silent: true),
     );
   }
-
-  // ============================================================
-  // LOAD BUSES
-  // ============================================================
-
   Future<void> _loadBuses({
     bool silent = false,
   }) async {
@@ -77,11 +66,12 @@ class _BusListScreenState extends State<BusListScreen> {
 
       setState(() {
         buses = _sortBusesByBoardingTime(data);
+
         isLoading = false;
         isRefreshing = false;
+
         errorMessage = null;
 
-        // Store the time of the latest successful API update.
         lastUpdated = DateTime.now();
       });
     } catch (e) {
@@ -92,15 +82,11 @@ class _BusListScreenState extends State<BusListScreen> {
       setState(() {
         isLoading = false;
         isRefreshing = false;
+
         errorMessage = "Unable to load buses";
       });
     }
   }
-
-  // ============================================================
-  // PULL TO REFRESH
-  // ============================================================
-
   Future<void> _refresh() async {
     if (!mounted) return;
 
@@ -108,13 +94,10 @@ class _BusListScreenState extends State<BusListScreen> {
       isRefreshing = true;
     });
 
-    await _loadBuses(silent: true);
+    await _loadBuses(
+      silent: true,
+    );
   }
-
-  // ============================================================
-  // FORMAT LAST UPDATED TIME
-  // ============================================================
-
   String _formatLastUpdated() {
     if (lastUpdated == null) {
       return "Not updated yet";
@@ -124,41 +107,53 @@ class _BusListScreenState extends State<BusListScreen> {
     final minute = lastUpdated!.minute;
 
     final displayHour =
-    hour == 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    hour == 0
+        ? 12
+        : hour > 12
+        ? hour - 12
+        : hour;
 
     final period = hour >= 12 ? "PM" : "AM";
 
     return "${displayHour.toString()}:"
-        "${minute.toString().padLeft(2, '0')} $period";
+        "${minute.toString().padLeft(2, '0')} "
+        "$period";
   }
   List<Bus> _sortBusesByBoardingTime(List<Bus> buses) {
-    final requestedMinutes = _timeToMinutes(widget.time);
+    final requestedMinutes = _timeToMinutes(
+      widget.time,
+    );
 
     final sorted = List<Bus>.from(buses);
 
     sorted.sort((a, b) {
-      final aMinutes =
-      _timeToMinutes(a.busArrivalTimeAtBoardingStop);
+      final aMinutes = _timeToMinutes(
+        a.busArrivalTimeAtBoardingStop,
+      );
 
-      final bMinutes =
-      _timeToMinutes(b.busArrivalTimeAtBoardingStop);
+      final bMinutes = _timeToMinutes(
+        b.busArrivalTimeAtBoardingStop,
+      );
 
-      // Prefer buses that have not yet arrived.
-      final aAfter = aMinutes >= requestedMinutes;
-      final bAfter = bMinutes >= requestedMinutes;
+      final aAfter =
+          aMinutes >= requestedMinutes;
+
+      final bAfter =
+          bMinutes >= requestedMinutes;
 
       if (aAfter != bAfter) {
         return aAfter ? -1 : 1;
       }
 
-      // Within the same group, choose the closest time.
       final aDifference =
       (aMinutes - requestedMinutes).abs();
 
       final bDifference =
       (bMinutes - requestedMinutes).abs();
 
-      return aDifference.compareTo(bDifference);
+      return aDifference.compareTo(
+        bDifference,
+      );
     });
 
     return sorted;
@@ -178,7 +173,9 @@ class _BusListScreenState extends State<BusListScreen> {
       final parts = cleaned.split(":");
 
       int hour = int.parse(parts[0]);
-      final minute = parts.length > 1
+
+      final minute =
+      parts.length > 1
           ? int.parse(parts[1])
           : 0;
 
@@ -192,7 +189,6 @@ class _BusListScreenState extends State<BusListScreen> {
 
       return hour * 60 + minute;
     } catch (_) {
-      // If the time cannot be parsed, put it at the end.
       return 24 * 60;
     }
   }
@@ -200,12 +196,9 @@ class _BusListScreenState extends State<BusListScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+
     super.dispose();
   }
-
-  // ============================================================
-  // BUILD
-  // ============================================================
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +212,9 @@ class _BusListScreenState extends State<BusListScreen> {
     final waitingBuses = buses
         .where(
           (bus) =>
-          bus.status.toUpperCase().contains("WAITING"),
+          bus.status
+              .toUpperCase()
+              .contains("WAITING"),
     )
         .toList();
 
@@ -242,11 +237,6 @@ class _BusListScreenState extends State<BusListScreen> {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-
-      // ========================================================
-      // APP BAR
-      // ========================================================
-
       appBar: AppBar(
         backgroundColor: AppTheme.primaryRed,
         foregroundColor: Colors.white,
@@ -266,9 +256,11 @@ class _BusListScreenState extends State<BusListScreen> {
               padding: EdgeInsets.only(
                 right: 16,
               ),
+
               child: SizedBox(
                 width: 17,
                 height: 17,
+
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   color: Colors.white,
@@ -277,33 +269,30 @@ class _BusListScreenState extends State<BusListScreen> {
             ),
         ],
       ),
-
-      // ========================================================
-      // BODY
-      // ========================================================
-
       body: Column(
         children: [
-          // Journey information
           _buildJourneyHeader(),
 
-          const SizedBox(height: 6),
+          const SizedBox(
+            height: 6,
+          ),
 
-          // Running / Waiting / Upcoming
           _buildFilterTabs(
             runningCount: runningBuses.length,
             waitingCount: waitingBuses.length,
             scheduledCount: scheduledBuses.length,
           ),
 
-          const SizedBox(height: 2),
+          const SizedBox(
+            height: 2,
+          ),
 
-          // Last updated indicator
           _buildLastUpdated(),
 
-          const SizedBox(height: 2),
+          const SizedBox(
+            height: 2,
+          ),
 
-          // Bus list
           Expanded(
             child: _buildContent(
               displayedBuses,
@@ -314,26 +303,27 @@ class _BusListScreenState extends State<BusListScreen> {
     );
   }
 
-  // ============================================================
-  // JOURNEY HEADER
-  // ============================================================
-
   Widget _buildJourneyHeader() {
     return Container(
       width: double.infinity,
+
       color: Colors.white,
+
       padding: const EdgeInsets.fromLTRB(
         16,
         14,
         16,
         15,
       ),
+
       child: Column(
         crossAxisAlignment:
         CrossAxisAlignment.start,
+
         children: [
           const Text(
             "YOUR JOURNEY",
+
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w800,
@@ -342,7 +332,9 @@ class _BusListScreenState extends State<BusListScreen> {
             ),
           ),
 
-          const SizedBox(height: 9),
+          const SizedBox(
+            height: 9,
+          ),
 
           Row(
             children: [
@@ -356,9 +348,11 @@ class _BusListScreenState extends State<BusListScreen> {
               ),
 
               const Padding(
-                padding: EdgeInsets.symmetric(
+                padding:
+                EdgeInsets.symmetric(
                   horizontal: 8,
                 ),
+
                 child: Icon(
                   Icons.arrow_forward_rounded,
                   size: 18,
@@ -368,7 +362,8 @@ class _BusListScreenState extends State<BusListScreen> {
 
               Expanded(
                 child: _journeyPoint(
-                  icon: Icons.location_on_rounded,
+                  icon:
+                  Icons.location_on_rounded,
                   value: widget.destination,
                   color: AppTheme.primaryRed,
                   alignRight: true,
@@ -377,22 +372,28 @@ class _BusListScreenState extends State<BusListScreen> {
             ],
           ),
 
-          const SizedBox(height: 11),
+          const SizedBox(
+            height: 11,
+          ),
 
-          // Boarding time
           Container(
             padding:
             const EdgeInsets.symmetric(
               horizontal: 9,
               vertical: 6,
             ),
+
             decoration: BoxDecoration(
               color: AppTheme.redLight,
+
               borderRadius:
               BorderRadius.circular(8),
             ),
+
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize:
+              MainAxisSize.min,
+
               children: [
                 const Icon(
                   Icons.access_time_rounded,
@@ -400,10 +401,13 @@ class _BusListScreenState extends State<BusListScreen> {
                   color: AppTheme.primaryRed,
                 ),
 
-                const SizedBox(width: 5),
+                const SizedBox(
+                  width: 5,
+                ),
 
                 Text(
-                  "Boarding around ${widget.time}",
+                  "Buses around ${widget.time}",
+
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
@@ -417,11 +421,6 @@ class _BusListScreenState extends State<BusListScreen> {
       ),
     );
   }
-
-  // ============================================================
-  // JOURNEY POINT
-  // ============================================================
-
   Widget _journeyPoint({
     required IconData icon,
     required String value,
@@ -429,9 +428,11 @@ class _BusListScreenState extends State<BusListScreen> {
     bool alignRight = false,
   }) {
     return Row(
-      mainAxisAlignment: alignRight
+      mainAxisAlignment:
+      alignRight
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
+
       children: [
         if (!alignRight)
           Icon(
@@ -441,16 +442,24 @@ class _BusListScreenState extends State<BusListScreen> {
           ),
 
         if (!alignRight)
-          const SizedBox(width: 5),
+          const SizedBox(
+            width: 5,
+          ),
 
         Flexible(
           child: Text(
             value,
+
             maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: alignRight
+
+            overflow:
+            TextOverflow.ellipsis,
+
+            textAlign:
+            alignRight
                 ? TextAlign.right
                 : TextAlign.left,
+
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w800,
@@ -460,7 +469,9 @@ class _BusListScreenState extends State<BusListScreen> {
         ),
 
         if (alignRight)
-          const SizedBox(width: 5),
+          const SizedBox(
+            width: 5,
+          ),
 
         if (alignRight)
           Icon(
@@ -471,11 +482,6 @@ class _BusListScreenState extends State<BusListScreen> {
       ],
     );
   }
-
-  // ============================================================
-  // FILTER TABS
-  // ============================================================
-
   Widget _buildFilterTabs({
     required int runningCount,
     required int waitingCount,
@@ -483,12 +489,14 @@ class _BusListScreenState extends State<BusListScreen> {
   }) {
     return Container(
       color: Colors.white,
+
       padding: const EdgeInsets.fromLTRB(
         12,
         5,
         12,
         8,
       ),
+
       child: Row(
         children: [
           Expanded(
@@ -502,7 +510,9 @@ class _BusListScreenState extends State<BusListScreen> {
             ),
           ),
 
-          const SizedBox(width: 7),
+          const SizedBox(
+            width: 7,
+          ),
 
           Expanded(
             child: _buildTab(
@@ -515,7 +525,9 @@ class _BusListScreenState extends State<BusListScreen> {
             ),
           ),
 
-          const SizedBox(width: 7),
+          const SizedBox(
+            width: 7,
+          ),
 
           Expanded(
             child: _buildTab(
@@ -530,11 +542,6 @@ class _BusListScreenState extends State<BusListScreen> {
       ),
     );
   }
-
-  // ============================================================
-  // TAB
-  // ============================================================
-
   Widget _buildTab({
     required String title,
     required int count,
@@ -554,7 +561,9 @@ class _BusListScreenState extends State<BusListScreen> {
 
       child: AnimatedContainer(
         duration:
-        const Duration(milliseconds: 180),
+        const Duration(
+          milliseconds: 180,
+        ),
 
         padding:
         const EdgeInsets.symmetric(
@@ -563,7 +572,8 @@ class _BusListScreenState extends State<BusListScreen> {
         ),
 
         decoration: BoxDecoration(
-          color: selected
+          color:
+          selected
               ? color.withOpacity(0.08)
               : AppTheme.background,
 
@@ -571,7 +581,8 @@ class _BusListScreenState extends State<BusListScreen> {
           BorderRadius.circular(10),
 
           border: Border.all(
-            color: selected
+            color:
+            selected
                 ? color.withOpacity(0.35)
                 : AppTheme.border,
           ),
@@ -580,33 +591,43 @@ class _BusListScreenState extends State<BusListScreen> {
         child: Row(
           mainAxisAlignment:
           MainAxisAlignment.center,
+
           children: [
             Icon(
               icon,
               size: 15,
-              color: selected
+              color:
+              selected
                   ? color
                   : AppTheme.textSecondary,
             ),
 
-            const SizedBox(width: 4),
+            const SizedBox(
+              width: 4,
+            ),
 
             Flexible(
               child: Text(
                 title,
+
                 overflow:
                 TextOverflow.ellipsis,
+
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: selected
+
+                  color:
+                  selected
                       ? color
                       : AppTheme.textSecondary,
                 ),
               ),
             ),
 
-            const SizedBox(width: 4),
+            const SizedBox(
+              width: 4,
+            ),
 
             Container(
               constraints:
@@ -621,22 +642,28 @@ class _BusListScreenState extends State<BusListScreen> {
               ),
 
               decoration: BoxDecoration(
-                color: selected
+                color:
+                selected
                     ? color.withOpacity(0.12)
                     : AppTheme.border,
+
                 borderRadius:
                 BorderRadius.circular(10),
               ),
 
               child: Text(
                 count.toString(),
+
                 textAlign:
                 TextAlign.center,
+
                 style: TextStyle(
                   fontSize: 9,
                   fontWeight:
                   FontWeight.w800,
-                  color: selected
+
+                  color:
+                  selected
                       ? color
                       : AppTheme.textSecondary,
                 ),
@@ -647,17 +674,13 @@ class _BusListScreenState extends State<BusListScreen> {
       ),
     );
   }
-
-  // ============================================================
-  // LAST UPDATED
-  // ============================================================
-
   Widget _buildLastUpdated() {
     final bool hasUpdated =
         lastUpdated != null;
 
     return Container(
       width: double.infinity,
+
       color: Colors.white,
 
       padding: const EdgeInsets.fromLTRB(
@@ -673,20 +696,26 @@ class _BusListScreenState extends State<BusListScreen> {
           Container(
             width: 7,
             height: 7,
+
             decoration: BoxDecoration(
-              color: hasUpdated
+              color:
+              hasUpdated
                   ? AppTheme.running
                   : AppTheme.textMuted,
+
               shape: BoxShape.circle,
             ),
           ),
 
-          const SizedBox(width: 6),
+          const SizedBox(
+            width: 6,
+          ),
 
           Text(
             hasUpdated
                 ? "Live data"
                 : "Waiting for data",
+
             style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
@@ -694,11 +723,14 @@ class _BusListScreenState extends State<BusListScreen> {
             ),
           ),
 
-          const SizedBox(width: 6),
+          const SizedBox(
+            width: 6,
+          ),
 
           Container(
             width: 3,
             height: 3,
+
             decoration:
             const BoxDecoration(
               color: AppTheme.textMuted,
@@ -706,12 +738,15 @@ class _BusListScreenState extends State<BusListScreen> {
             ),
           ),
 
-          const SizedBox(width: 6),
+          const SizedBox(
+            width: 6,
+          ),
 
           Text(
             hasUpdated
                 ? "Updated ${_formatLastUpdated()}"
                 : "Not updated yet",
+
             style: const TextStyle(
               fontSize: 10,
               color: AppTheme.textMuted,
@@ -724,6 +759,7 @@ class _BusListScreenState extends State<BusListScreen> {
             const SizedBox(
               width: 12,
               height: 12,
+
               child:
               CircularProgressIndicator(
                 strokeWidth: 1.5,
@@ -741,14 +777,9 @@ class _BusListScreenState extends State<BusListScreen> {
     );
   }
 
-  // ============================================================
-  // CONTENT
-  // ============================================================
-
   Widget _buildContent(
       List<Bus> displayedBuses,
       ) {
-    // Initial loading
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(
@@ -757,13 +788,10 @@ class _BusListScreenState extends State<BusListScreen> {
       );
     }
 
-    // API error
     if (errorMessage != null &&
         buses.isEmpty) {
       return _buildErrorState();
     }
-
-    // No buses
     if (displayedBuses.isEmpty) {
       return RefreshIndicator(
         color: AppTheme.primaryRed,
@@ -784,7 +812,6 @@ class _BusListScreenState extends State<BusListScreen> {
       );
     }
 
-    // Bus list
     return RefreshIndicator(
       color: AppTheme.primaryRed,
 
@@ -812,10 +839,6 @@ class _BusListScreenState extends State<BusListScreen> {
       ),
     );
   }
-
-  // ============================================================
-  // EMPTY STATE
-  // ============================================================
 
   Widget _buildEmptyState() {
     String title;
@@ -876,15 +899,17 @@ class _BusListScreenState extends State<BusListScreen> {
               child: Icon(
                 icon,
                 size: 34,
-                color:
-                AppTheme.primaryRed,
+                color: AppTheme.primaryRed,
               ),
             ),
 
-            const SizedBox(height: 17),
+            const SizedBox(
+              height: 17,
+            ),
 
             Text(
               title,
+
               textAlign:
               TextAlign.center,
 
@@ -897,10 +922,13 @@ class _BusListScreenState extends State<BusListScreen> {
               ),
             ),
 
-            const SizedBox(height: 6),
+            const SizedBox(
+              height: 6,
+            ),
 
             Text(
               subtitle,
+
               textAlign:
               TextAlign.center,
 
@@ -916,10 +944,6 @@ class _BusListScreenState extends State<BusListScreen> {
       ),
     );
   }
-
-  // ============================================================
-  // ERROR STATE
-  // ============================================================
 
   Widget _buildErrorState() {
     return Center(
@@ -945,15 +969,17 @@ class _BusListScreenState extends State<BusListScreen> {
               child: const Icon(
                 Icons.cloud_off_rounded,
                 size: 32,
-                color:
-                AppTheme.primaryRed,
+                color: AppTheme.primaryRed,
               ),
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(
+              height: 15,
+            ),
 
             const Text(
               "Couldn't load buses",
+
               style: TextStyle(
                 fontSize: 16,
                 fontWeight:
@@ -963,12 +989,16 @@ class _BusListScreenState extends State<BusListScreen> {
               ),
             ),
 
-            const SizedBox(height: 6),
+            const SizedBox(
+              height: 6,
+            ),
 
             const Text(
               "Please check your connection and try again.",
+
               textAlign:
               TextAlign.center,
+
               style: TextStyle(
                 fontSize: 12,
                 color:
@@ -976,7 +1006,9 @@ class _BusListScreenState extends State<BusListScreen> {
               ),
             ),
 
-            const SizedBox(height: 18),
+            const SizedBox(
+              height: 18,
+            ),
 
             SizedBox(
               height: 42,
@@ -997,8 +1029,7 @@ class _BusListScreenState extends State<BusListScreen> {
                   elevation: 0,
 
                   padding:
-                  const EdgeInsets
-                      .symmetric(
+                  const EdgeInsets.symmetric(
                     horizontal: 22,
                   ),
 
@@ -1013,6 +1044,7 @@ class _BusListScreenState extends State<BusListScreen> {
 
                 child: const Text(
                   "Try again",
+
                   style: TextStyle(
                     fontWeight:
                     FontWeight.w700,
