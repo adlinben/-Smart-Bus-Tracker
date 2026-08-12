@@ -76,7 +76,7 @@ class _BusListScreenState extends State<BusListScreen> {
       if (!mounted) return;
 
       setState(() {
-        buses = data;
+        buses = _sortBusesByBoardingTime(data);
         isLoading = false;
         isRefreshing = false;
         errorMessage = null;
@@ -130,6 +130,71 @@ class _BusListScreenState extends State<BusListScreen> {
 
     return "${displayHour.toString()}:"
         "${minute.toString().padLeft(2, '0')} $period";
+  }
+  List<Bus> _sortBusesByBoardingTime(List<Bus> buses) {
+    final requestedMinutes = _timeToMinutes(widget.time);
+
+    final sorted = List<Bus>.from(buses);
+
+    sorted.sort((a, b) {
+      final aMinutes =
+      _timeToMinutes(a.busArrivalTimeAtBoardingStop);
+
+      final bMinutes =
+      _timeToMinutes(b.busArrivalTimeAtBoardingStop);
+
+      // Prefer buses that have not yet arrived.
+      final aAfter = aMinutes >= requestedMinutes;
+      final bAfter = bMinutes >= requestedMinutes;
+
+      if (aAfter != bAfter) {
+        return aAfter ? -1 : 1;
+      }
+
+      // Within the same group, choose the closest time.
+      final aDifference =
+      (aMinutes - requestedMinutes).abs();
+
+      final bDifference =
+      (bMinutes - requestedMinutes).abs();
+
+      return aDifference.compareTo(bDifference);
+    });
+
+    return sorted;
+  }
+  int _timeToMinutes(String time) {
+    try {
+      final value = time.trim().toUpperCase();
+
+      final isPm = value.contains("PM");
+      final isAm = value.contains("AM");
+
+      final cleaned = value
+          .replaceAll("AM", "")
+          .replaceAll("PM", "")
+          .trim();
+
+      final parts = cleaned.split(":");
+
+      int hour = int.parse(parts[0]);
+      final minute = parts.length > 1
+          ? int.parse(parts[1])
+          : 0;
+
+      if (isPm && hour != 12) {
+        hour += 12;
+      }
+
+      if (isAm && hour == 12) {
+        hour = 0;
+      }
+
+      return hour * 60 + minute;
+    } catch (_) {
+      // If the time cannot be parsed, put it at the end.
+      return 24 * 60;
+    }
   }
 
   @override
@@ -741,6 +806,7 @@ class _BusListScreenState extends State<BusListScreen> {
             (context, index) {
           return BusCard(
             bus: displayedBuses[index],
+            recommended: index == 0,
           );
         },
       ),
