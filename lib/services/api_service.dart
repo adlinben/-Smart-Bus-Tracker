@@ -28,4 +28,20 @@ class ApiService {
       "Failed to connect to server (${response.statusCode})",
     );
   }
+  Future<dynamic> registerDevice({
+    required String deviceToken,
+    required String busId,
+    required String boardingStop,
+    required String destinationStop,
+  }) async {
+    return await post(
+      "/bus/device/register",
+      {
+        "deviceToken": deviceToken,
+        "busId": busId,
+        "boardingStop": boardingStop,
+        "destinationStop": destinationStop,
+      },
+    );
+  }
 }

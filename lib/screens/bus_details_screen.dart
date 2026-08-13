@@ -7,6 +7,8 @@ import '../widgets/running_bus_details.dart';
 import '../widgets/scheduled_bus_details.dart';
 import '../widgets/route_stops_widget.dart';
 import 'map_screen.dart';
+import '../repositories/notification_repository.dart';
+import '../services/notification_service.dart';
 
 class BusDetailsScreen extends StatefulWidget {
   final Bus bus;
@@ -16,11 +18,67 @@ class BusDetailsScreen extends StatefulWidget {
   });
 
   @override
-  State<BusDetailsScreen> createState() => _BusDetailsScreenState();}
+  State<BusDetailsScreen> createState() => _BusDetailsScreenState(
+      Future<void> _subscribeToBus() async {
+  if (_notificationLoading) return;
+
+  setState(() {
+  _notificationLoading = true;
+  });
+
+  try {
+  final String? token = await NotificationService.getFcmToken();
+
+  if (token == null || token.isEmpty) {
+  throw Exception("FCM token is not available.");
+  }
+
+  await _notificationRepository.subscribeToBus(
+  fcmToken: token,
+  busId: bus.busId,
+  boardingStop: bus.boardingStop,
+  destinationStop: bus.destinationStop,
+  );
+
+  if (!mounted) return;
+
+  setState(() {
+  _notificationsEnabled = true;
+  });
+
+  ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(
+  content: Text(
+  "Notifications enabled for this bus.",
+  ),
+  ),
+  );
+  } catch (e) {
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+  content: Text(
+  "Could not enable notifications: $e",
+  ),
+  ),
+  );
+  } finally {
+  if (mounted) {
+  setState(() {
+  _notificationLoading = false;
+  });
+  }
+  }
+  }
+  );}
 class _BusDetailsScreenState extends State<BusDetailsScreen> {
   final BusRepository _repository = BusRepository();
+  final NotificationRepository _notificationRepository = NotificationRepository();
   late Bus bus;
   Timer? _timer;
+  bool _notificationsEnabled = false;
+  bool _notificationLoading = false;
 
   @override
   void initState() {
@@ -93,6 +151,8 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               _buildQuickEtaCard(
                 statusColor: statusColor, isRunning: isRunning, isWaiting: isWaiting, isScheduled: isScheduled,
               ),
+              const SizedBox(height: 10),
+              _buildNotificationButton(),
               const SizedBox(height: 10),
               _section(title: isScheduled ? "Trip Information" : "Live Information",
                 icon: isScheduled ? Icons.info_outline_rounded : Icons.my_location_rounded,
@@ -405,6 +465,46 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+  Widget _buildNotificationButton() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton.icon(
+        onPressed: _notificationLoading
+            ? null
+            : _subscribeToBus,
+        icon: Icon(
+          _notificationsEnabled
+              ? Icons.notifications_active_rounded
+              : Icons.notifications_none_rounded,
+          size: 20,
+        ),
+        label: Text(
+          _notificationLoading
+              ? "Enabling notifications..."
+              : _notificationsEnabled
+              ? "Notifications enabled"
+              : "Notify me about this bus",
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _notificationsEnabled
+              ? AppTheme.running
+              : AppTheme.primaryRed,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: AppTheme.textMuted,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       ),
     );
   }

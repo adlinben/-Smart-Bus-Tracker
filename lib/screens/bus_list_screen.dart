@@ -4,6 +4,8 @@ import '../models/bus.dart';
 import '../repositories/bus_repository.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bus_card.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import '../repositories/notification_repository.dart';
 
 class BusListScreen extends StatefulWidget {
   final String source;
@@ -556,6 +558,7 @@ class _BusListScreenState extends State<BusListScreen> {
           return BusCard(
             bus: bus,
             recommended: bus.busId == recommendedBusId,
+            onBusSelected: registerSelectedBus,
           );
         },
       ),
@@ -668,5 +671,33 @@ class _BusListScreenState extends State<BusListScreen> {
         ),
       ),
     );
+  }
+  Future<void> registerSelectedBus(Bus bus) async {
+    try {
+      final token =
+      await FirebaseMessaging.instance.getToken();
+
+      if (token == null || token.isEmpty) {
+        debugPrint("FCM token not available");
+        return;
+      }
+
+      final repository = NotificationRepository();
+
+      await repository.registerBusNotification(
+        deviceToken: token,
+        busId: bus.busId,
+        boardingStop: bus.boardingStop,
+        destinationStop: bus.destinationStop,
+      );
+
+      debugPrint(
+        "Registered for bus: ${bus.busId}",
+      );
+    } catch (e) {
+      debugPrint(
+        "Bus notification registration failed: $e",
+      );
+    }
   }
 }

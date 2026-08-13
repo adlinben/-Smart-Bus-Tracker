@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import '../models/bus.dart';
 import '../screens/bus_details_screen.dart';
 import '../theme/app_theme.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import '../repositories/notification_repository.dart';
 
 class BusCard extends StatelessWidget {
   final Bus bus;
   final bool recommended;
+  final Future<void> Function(Bus bus)? onBusSelected;
 
   const BusCard({
     super.key,
     required this.bus,
     this.recommended = false,
+    this.onBusSelected,
   });
 
   String _normalizeStatus(String status) {
@@ -52,13 +56,23 @@ class BusCard extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          Navigator.push(context,
+        onTap: () async {
+          // Register this specific bus for notifications
+          if (onBusSelected != null) {
+            await onBusSelected!(bus);
+          }
+
+          if (!context.mounted) return;
+
+          // Open bus details
+          Navigator.push(
+            context,
             MaterialPageRoute(
-              builder: (_) => BusDetailsScreen(bus: bus,),
+              builder: (_) => BusDetailsScreen(bus: bus),
             ),
           );
         },
+
         child: Padding(
           padding:
           const EdgeInsets.all(15),
