@@ -319,7 +319,7 @@ class _BusListScreenState extends State<BusListScreen> {
                 ),
                 const SizedBox(width: 5,),
                 Text(
-                  "Preferred boarding: ${widget.time}",
+                  "Boarding Around: ${widget.time}",
                   style: const TextStyle(
                     fontSize: 11, fontWeight: FontWeight.w700, color: AppTheme.primaryRed,
                   ),
