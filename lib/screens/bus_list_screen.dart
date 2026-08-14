@@ -40,8 +40,8 @@ class _BusListScreenState extends State<BusListScreen> {
     _loadBuses();
     _refreshTimer = Timer.periodic(
       const Duration(seconds: 30), (_) {
-        _loadBuses(silent: true);
-      },
+      _loadBuses(silent: true);
+    },
     );
   }
   Future<void> _loadBuses({
