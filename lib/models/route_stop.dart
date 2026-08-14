@@ -17,21 +17,28 @@ class RouteStop {
     required this.currentStop,
   });
 
-  factory RouteStop.fromJson(Map<String, dynamic> json) {
+  factory RouteStop.fromJson(
+      Map<String, dynamic> json,
+      ) {
     return RouteStop(
-      stopId: json['stopId']?.toString() ?? '',
+      stopId:
+      json['stopId']?.toString() ?? '',
 
-      stopName: json['stopName']?.toString() ?? '',
+      stopName:
+      json['stopName']?.toString() ?? '',
 
-      stopOrder: _toInt(
-        json['stopOrder'],
-      ),
+      stopOrder:
+      _toInt(json['stopOrder']),
 
       expectedArrivalText:
-      json['expectedArrivalText']?.toString() ?? '',
+      json['expectedArrivalText']
+          ?.toString() ??
+          '',
 
       distanceAwayText:
-      json['distanceAwayText']?.toString() ?? '',
+      json['distanceAwayText']
+          ?.toString() ??
+          '',
 
       currentStop:
       _toBool(json['currentStop']),
@@ -41,12 +48,28 @@ class RouteStop {
   // ------------------------------------------------------------
   // Compatibility getter
   // ------------------------------------------------------------
-  // If another widget uses stop.eta,
-  // it will receive expectedArrivalText.
-  String get eta => expectedArrivalText;
+
+  String get eta {
+    return expectedArrivalText;
+  }
 
   // ------------------------------------------------------------
-  // Convert number safely
+  // Compatibility getter
+  //
+  // IMPORTANT:
+  // This is a STRING because backend sends:
+  //
+  // "36.1 km away"
+  //
+  // Do not compare this with numbers.
+  // ------------------------------------------------------------
+
+  String get remainingDistance {
+    return distanceAwayText;
+  }
+
+  // ------------------------------------------------------------
+  // Convert safely to int
   // ------------------------------------------------------------
 
   static int _toInt(dynamic value) {
@@ -63,14 +86,14 @@ class RouteStop {
     }
 
     if (value is String) {
-      return int.tryParse(value) ?? 0;
+      return int.tryParse(value.trim()) ?? 0;
     }
 
     return 0;
   }
 
   // ------------------------------------------------------------
-  // Convert boolean safely
+  // Convert safely to bool
   // ------------------------------------------------------------
 
   static bool _toBool(dynamic value) {
@@ -86,6 +109,10 @@ class RouteStop {
       return value.trim().toLowerCase() == 'true';
     }
 
+    if (value is num) {
+      return value != 0;
+    }
+
     return false;
   }
 
@@ -98,7 +125,7 @@ RouteStop(
   stopOrder: $stopOrder,
   expectedArrivalText: $expectedArrivalText,
   distanceAwayText: $distanceAwayText,
-  currentStop: $currentStop
+  currentStop: $currentStop,
 )
 ''';
   }
