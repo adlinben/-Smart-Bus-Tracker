@@ -67,7 +67,6 @@ class _BusListScreenState extends State<BusListScreen> {
       if (!mounted) {
         return;
       }
-
       final sortedBuses = _sortBuses(result);
       final recommendedBus = _findRecommendedBus(sortedBuses,);
 
@@ -97,7 +96,6 @@ class _BusListScreenState extends State<BusListScreen> {
     if (!mounted || _requestInProgress) {
       return;
     }
-
     setState(() {
       isRefreshing = true;
     });
@@ -683,14 +681,12 @@ class _BusListScreenState extends State<BusListScreen> {
       }
 
       final repository = NotificationRepository();
-
       await repository.registerBusNotification(
         deviceToken: token,
         busId: bus.busId,
         boardingStop: bus.boardingStop,
         destinationStop: bus.destinationStop,
       );
-
       debugPrint(
         "Registered for bus: ${bus.busId}",
       );

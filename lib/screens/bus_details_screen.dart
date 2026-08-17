@@ -12,7 +12,6 @@ import '../services/notification_service.dart';
 
 class BusDetailsScreen extends StatefulWidget {
   final Bus bus;
-
   const BusDetailsScreen({
     super.key,
     required this.bus,
@@ -24,30 +23,22 @@ class BusDetailsScreen extends StatefulWidget {
 
 class _BusDetailsScreenState extends State<BusDetailsScreen> {
   final BusRepository _repository = BusRepository();
-  final NotificationRepository _notificationRepository =
-  NotificationRepository();
-
+  final NotificationRepository _notificationRepository = NotificationRepository();
   late Bus bus;
-
   Timer? _timer;
-
   bool _notificationsEnabled = false;
   bool _notificationLoading = false;
 
   @override
   void initState() {
     super.initState();
-
     bus = widget.bus;
-
     _loadBus();
-
     _timer = Timer.periodic(
       const Duration(seconds: 30),
           (_) => _loadBus(),
     );
   }
-
   Future<void> _loadBus() async {
     try {
       final buses = await _repository.searchBuses(
@@ -55,16 +46,13 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
         bus.destinationStop,
         bus.departureTime,
       );
-
       final updatedBus = buses.firstWhere(
             (b) => b.busId == bus.busId,
         orElse: () => bus,
       );
-
       if (!mounted) {
         return;
       }
-
       setState(() {
         bus = updatedBus;
       });
@@ -72,38 +60,30 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       debugPrint("Bus details refresh error: $e");
     }
   }
-
   Future<void> _subscribeToBus() async {
     if (_notificationLoading) {
       return;
     }
-
     setState(() {
       _notificationLoading = true;
     });
-
     try {
       final String? token = await NotificationService.getFcmToken();
-
       if (token == null || token.isEmpty) {
         throw Exception("FCM token is not available.");
       }
-
       await _notificationRepository.subscribeToBus(
         fcmToken: token,
         busId: bus.busId,
         boardingStop: bus.boardingStop,
         destinationStop: bus.destinationStop,
       );
-
       if (!mounted) {
         return;
       }
-
       setState(() {
         _notificationsEnabled = true;
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -115,7 +95,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       if (!mounted) {
         return;
       }
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -131,44 +110,20 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       }
     }
   }
-
   @override
   void dispose() {
     _timer?.cancel();
-    super.dispose();
-  }
-
+    super.dispose();}
   @override
   Widget build(BuildContext context) {
     final status = bus.status.toUpperCase();
-
     final bool isRunning = status == "RUNNING";
     final bool isWaiting = status.contains("WAITING");
-    final bool isScheduled =
-        status == "SCHEDULED" || status == "UPCOMING";
-
-    final Color statusColor = isRunning
-        ? AppTheme.running
-        : isWaiting
-        ? AppTheme.waiting
-        : AppTheme.scheduled;
-
-    final Color statusBackground = isRunning
-        ? AppTheme.runningLight
-        : isWaiting
-        ? AppTheme.waitingLight
-        : AppTheme.scheduledLight;
-
-    final String displayStatus = isRunning
-        ? "RUNNING NOW"
-        : isWaiting
-        ? "WAITING AT STOP"
-        : "UPCOMING";
-
-    final bool hasLiveLocation =
-        (isRunning || isWaiting) &&
-            bus.latitude != 0 &&
-            bus.longitude != 0;
+    final bool isScheduled = status == "SCHEDULED" || status == "UPCOMING";
+    final Color statusColor = isRunning ? AppTheme.running : isWaiting ? AppTheme.waiting : AppTheme.scheduled;
+    final Color statusBackground = isRunning ? AppTheme.runningLight : isWaiting ? AppTheme.waitingLight : AppTheme.scheduledLight;
+    final String displayStatus = isRunning ? "RUNNING NOW" : isWaiting ? "WAITING AT STOP" : "UPCOMING";
+    final bool hasLiveLocation = (isRunning || isWaiting) && bus.latitude != 0 && bus.longitude != 0;
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -208,15 +163,9 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               _buildNotificationButton(),
               const SizedBox(height: 10),
               _section(
-                title: isScheduled
-                    ? "Trip Information"
-                    : "Live Information",
-                icon: isScheduled
-                    ? Icons.info_outline_rounded
-                    : Icons.my_location_rounded,
-                child: isScheduled
-                    ? ScheduledBusDetails(bus: bus)
-                    : RunningBusDetails(bus: bus),
+                title: isScheduled ? "Trip Information" : "Live Information",
+                icon: isScheduled ? Icons.info_outline_rounded : Icons.my_location_rounded,
+                child: isScheduled ? ScheduledBusDetails(bus: bus) : RunningBusDetails(bus: bus),
               ),
               const SizedBox(height: 10),
               _section(
@@ -248,27 +197,21 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
     return Container(
       width: double.infinity,
       color: Colors.white,
-      padding: const EdgeInsets.fromLTRB(
-        18,
-        18,
-        18,
-        20,
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20,
       ),
       child: Column(
         children: [
           Row(
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: 52, height: 52,
                 decoration: BoxDecoration(
                   color: statusBackground,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
                   Icons.directions_bus_rounded,
-                  size: 29,
-                  color: statusColor,
+                  size: 29, color: statusColor,
                 ),
               ),
               const SizedBox(width: 13),
@@ -279,19 +222,14 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                     Text(
                       bus.busNumber,
                       style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: AppTheme.textPrimary,
+                        fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      bus.startingFrom.isEmpty
-                          ? "Bus service"
-                          : bus.startingFrom,
+                      bus.startingFrom.isEmpty ? "Bus service" : bus.startingFrom,
                       style: const TextStyle(
-                        fontSize: 12,
-                        color: AppTheme.textSecondary,
+                        fontSize: 12, color: AppTheme.textSecondary,
                       ),
                     ),
                   ],
@@ -299,8 +237,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 7,
+                  horizontal: 10, vertical: 7,
                 ),
                 decoration: BoxDecoration(
                   color: statusBackground,
@@ -311,11 +248,9 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                   children: [
                     if (displayStatus == "RUNNING NOW")
                       Container(
-                        width: 7,
-                        height: 7,
+                        width: 7, height: 7,
                         decoration: const BoxDecoration(
-                          color: AppTheme.running,
-                          shape: BoxShape.circle,
+                          color: AppTheme.running, shape: BoxShape.circle,
                         ),
                       ),
                     if (displayStatus == "RUNNING NOW")
@@ -323,8 +258,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                     Text(
                       displayStatus,
                       style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 9, fontWeight: FontWeight.w800,
                         color: statusColor,
                       ),
                     ),
@@ -338,16 +272,14 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
             children: [
               Expanded(
                 child: _routePoint(
-                  label: "BOARDING",
-                  value: bus.boardingStop,
+                  label: "BOARDING", value: bus.boardingStop,
                 ),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Icon(
                   Icons.arrow_forward_rounded,
-                  size: 19,
-                  color: AppTheme.primaryRed,
+                  size: 19, color: AppTheme.primaryRed,
                 ),
               ),
               Expanded(
@@ -363,24 +295,19 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
   Widget _routePoint({
     required String label,
     required String value,
     bool alignRight = false,
   }) {
     return Column(
-      crossAxisAlignment: alignRight
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
+      crossAxisAlignment: alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: const TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.5,
-            color: AppTheme.textMuted,
+            fontSize: 9, fontWeight: FontWeight.w700,
+            letterSpacing: 0.5, color: AppTheme.textMuted,
           ),
         ),
         const SizedBox(height: 4),
@@ -388,18 +315,14 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
           value,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          textAlign:
-          alignRight ? TextAlign.right : TextAlign.left,
+          textAlign: alignRight ? TextAlign.right : TextAlign.left,
           style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: AppTheme.textPrimary,
+            fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.textPrimary,
           ),
         ),
       ],
     );
   }
-
   Widget _buildQuickEtaCard({
     required Color statusColor,
     required bool isRunning,
@@ -410,7 +333,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
     String subtitle;
     String time;
     IconData icon;
-
     if (isRunning || isWaiting) {
       title = "Your bus arrival";
       subtitle = bus.boardingStop;
@@ -422,7 +344,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       time = bus.busArrivalTimeAtBoardingStop;
       icon = Icons.schedule_rounded;
     }
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
       padding: const EdgeInsets.all(15),
@@ -436,30 +357,23 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       child: Row(
         children: [
           Container(
-            width: 46,
-            height: 46,
+            width: 46, height: 46,
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.10),
-              shape: BoxShape.circle,
+              color: statusColor.withOpacity(0.10), shape: BoxShape.circle,
             ),
             child: Icon(
-              icon,
-              color: statusColor,
-              size: 23,
+              icon, color: statusColor, size: 23,
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.textSecondary,
+                    fontSize: 11, fontWeight: FontWeight.w700, color: AppTheme.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -468,9 +382,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.textPrimary,
+                    fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.textPrimary,
                   ),
                 ),
               ],
@@ -482,18 +394,14 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               const Text(
                 "ARRIVAL",
                 style: TextStyle(
-                  fontSize: 8,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textMuted,
+                  fontSize: 8, fontWeight: FontWeight.w700, color: AppTheme.textMuted,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 time,
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: statusColor,
+                  fontSize: 18, fontWeight: FontWeight.w800, color: statusColor,
                 ),
               ),
             ],
@@ -502,7 +410,6 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
   Widget _section({
     required String title,
     required IconData icon,
@@ -511,30 +418,21 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
     return Container(
       width: double.infinity,
       color: Colors.white,
-      padding: const EdgeInsets.fromLTRB(
-        16,
-        16,
-        16,
-        18,
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 18,
       ),
       child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(
-                icon,
-                size: 18,
-                color: AppTheme.primaryRed,
+                icon, size: 18, color: AppTheme.primaryRed,
               ),
               const SizedBox(width: 7),
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.textPrimary,
+                  fontSize: 15, fontWeight: FontWeight.w800, color: AppTheme.textPrimary,
                 ),
               ),
             ],
@@ -549,18 +447,15 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
   Widget _buildMapButton(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
-      width: double.infinity,
-      height: 52,
+      width: double.infinity, height: 52,
       child: ElevatedButton.icon(
         icon: const Icon(
-          Icons.location_on_rounded,
-          size: 20,
+          Icons.location_on_rounded, size: 20,
         ),
         label: const Text(
           "View Live Location",
           style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontSize: 14, fontWeight: FontWeight.w700,
           ),
         ),
         style: ElevatedButton.styleFrom(
@@ -572,8 +467,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
           ),
         ),
         onPressed: () {
-          Navigator.push(
-            context,
+          Navigator.push(context,
             MaterialPageRoute(
               builder: (_) => MapScreen(bus: bus),
             ),
@@ -582,35 +476,29 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       ),
     );
   }
-
   Widget _buildLastUpdated() {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 4,
+        horizontal: 16, vertical: 4,
       ),
       child: Row(
         mainAxisAlignment:
         MainAxisAlignment.center,
         children: [
           const Icon(
-            Icons.sync_rounded,
-            size: 14,
-            color: AppTheme.textMuted,
+            Icons.sync_rounded, size: 14, color: AppTheme.textMuted,
           ),
           const SizedBox(width: 5),
           Text(
             "Last updated: ${bus.lastUpdated}",
             style: const TextStyle(
-              fontSize: 10,
-              color: AppTheme.textMuted,
+              fontSize: 10, color: AppTheme.textMuted,
             ),
           ),
         ],
       ),
     );
   }
-
   Widget _buildNotificationButton() {
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -635,8 +523,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
               ? "Notifications enabled"
               : "Notify me about this bus",
           style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontSize: 14, fontWeight: FontWeight.w700,
           ),
         ),
         style: ElevatedButton.styleFrom(

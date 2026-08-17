@@ -16,7 +16,6 @@ class BusRepository {
     print("Destination : $destination");
     print("Time        : $time");
     print("========================================");
-
     final response = await _apiService.post(
       ApiConstants.searchBus,
       {
@@ -25,7 +24,6 @@ class BusRepository {
         "travelTime": time,
       },
     );
-
     print("========================================");
     print("RAW BACKEND RESPONSE");
     print(response);
@@ -34,15 +32,12 @@ class BusRepository {
     if (response == null) {
       return [];
     }
-
     if (response is! List) {
       throw Exception(
         "Expected bus list from backend",
       );
     }
-
     final List<Bus> buses = [];
-
     for (final item in response) {
       if (item is Map<String, dynamic>) {
         buses.add(
@@ -56,7 +51,6 @@ class BusRepository {
         );
       }
     }
-
     print(
       "TOTAL BUSES FROM BACKEND: ${buses.length}",
     );
@@ -81,9 +75,7 @@ class BusRepository {
         "Route Stops  : ${bus.routeStops.length}",
       );
     }
-
     print("========================================");
-
     return buses;
   }
 }

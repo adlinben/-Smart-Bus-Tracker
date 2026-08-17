@@ -57,22 +57,16 @@ class BusCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () async {
-          // Register this specific bus for notifications
           if (onBusSelected != null) {
             await onBusSelected!(bus);
           }
-
           if (!context.mounted) return;
-
-          // Open bus details
-          Navigator.push(
-            context,
+          Navigator.push(context,
             MaterialPageRoute(
               builder: (_) => BusDetailsScreen(bus: bus),
             ),
           );
         },
-
         child: Padding(
           padding:
           const EdgeInsets.all(15),
@@ -176,9 +170,7 @@ class BusCard extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 2,),
-                            Text(
-                              _safeText(
-                                bus.currentStop, "Location unavailable",),
+                            Text(_safeText(bus.currentStop, "Location unavailable",),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style:
@@ -197,12 +189,8 @@ class BusCard extends StatelessWidget {
                 const SizedBox(height: 13,),
                 _etaBox(
                   title: "YOUR BOARDING STOP",
-                  stopName:
-                  _safeText(
-                    bus.boardingStop, "Boarding stop",),
-                  time:
-                  _safeText(
-                    bus.busArrivalTimeAtBoardingStop, "Time unavailable",),
+                  stopName: _safeText(bus.boardingStop, "Boarding stop",),
+                  time: _safeText(bus.busArrivalTimeAtBoardingStop, "Time unavailable",),
                   color: AppTheme.primaryRed,
                 ),
               ],
@@ -285,8 +273,7 @@ class BusCard extends StatelessWidget {
                   const SizedBox(width: 4,),
                   Icon(
                     Icons.arrow_forward_rounded,
-                    size: 16,
-                    color: statusColor,
+                    size: 16, color: statusColor,
                   ),
                 ],
               ),

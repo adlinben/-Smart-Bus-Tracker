@@ -2,10 +2,8 @@ class RouteStop {
   final String stopId;
   final String stopName;
   final int stopOrder;
-
   final String expectedArrivalText;
   final String distanceAwayText;
-
   final bool currentStop;
 
   const RouteStop({
@@ -21,62 +19,24 @@ class RouteStop {
       Map<String, dynamic> json,
       ) {
     return RouteStop(
-      stopId:
-      json['stopId']?.toString() ?? '',
-
-      stopName:
-      json['stopName']?.toString() ?? '',
-
-      stopOrder:
-      _toInt(json['stopOrder']),
-
-      expectedArrivalText:
-      json['expectedArrivalText']
-          ?.toString() ??
-          '',
-
-      distanceAwayText:
-      json['distanceAwayText']
-          ?.toString() ??
-          '',
-
-      currentStop:
-      _toBool(json['currentStop']),
+      stopId: json['stopId']?.toString() ?? '',
+      stopName: json['stopName']?.toString() ?? '',
+      stopOrder: _toInt(json['stopOrder']),
+      expectedArrivalText: json['expectedArrivalText']?.toString() ?? '',
+      distanceAwayText: json['distanceAwayText']?.toString() ?? '',
+      currentStop: _toBool(json['currentStop']),
     );
   }
-
-  // ------------------------------------------------------------
-  // Compatibility getter
-  // ------------------------------------------------------------
-
   String get eta {
     return expectedArrivalText;
   }
-
-  // ------------------------------------------------------------
-  // Compatibility getter
-  //
-  // IMPORTANT:
-  // This is a STRING because backend sends:
-  //
-  // "36.1 km away"
-  //
-  // Do not compare this with numbers.
-  // ------------------------------------------------------------
-
   String get remainingDistance {
     return distanceAwayText;
   }
-
-  // ------------------------------------------------------------
-  // Convert safely to int
-  // ------------------------------------------------------------
-
   static int _toInt(dynamic value) {
     if (value == null) {
       return 0;
     }
-
     if (value is int) {
       return value;
     }
@@ -88,31 +48,21 @@ class RouteStop {
     if (value is String) {
       return int.tryParse(value.trim()) ?? 0;
     }
-
     return 0;
   }
-
-  // ------------------------------------------------------------
-  // Convert safely to bool
-  // ------------------------------------------------------------
-
   static bool _toBool(dynamic value) {
     if (value == null) {
       return false;
     }
-
     if (value is bool) {
       return value;
     }
-
     if (value is String) {
       return value.trim().toLowerCase() == 'true';
     }
-
     if (value is num) {
       return value != 0;
     }
-
     return false;
   }
 
