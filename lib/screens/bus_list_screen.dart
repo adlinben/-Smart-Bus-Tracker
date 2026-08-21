@@ -64,6 +64,22 @@ class _BusListScreenState extends State<BusListScreen> {
         widget.destination,
         widget.time,
       );
+      debugPrint(
+        '[BUS LIST] Backend returned ${result.length} buses',
+      );
+
+      for (final bus in result) {
+        debugPrint(
+          '[BUS LIST] '
+              'Bus=${bus.busId} '
+              'Status=${bus.status} '
+              'CurrentStop=${bus.currentStop} '
+              'NextStop=${bus.nextStop} '
+              'Speed=${bus.speed} '
+              'ETA=${bus.etaToBoardingStop} '
+              'Updated=${bus.lastUpdated}',
+        );
+      }
       if (!mounted) {
         return;
       }
