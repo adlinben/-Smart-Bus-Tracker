@@ -4,13 +4,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../firebase_options.dart';
 
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> firebaseMessagingBackgroundHandler(
+    RemoteMessage message,
+    ) async {
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,);
-
-  print("Background Notification Received");
-  print(message.notification?.title);
-  print(message.notification?.body);}
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin
@@ -18,7 +18,8 @@ class NotificationService {
   FlutterLocalNotificationsPlugin();
 
   static Future<String?> getFcmToken() async {
-    return await FirebaseMessaging.instance.getToken();}
+    return await FirebaseMessaging.instance.getToken();
+  }
 
   static Future<void> initialize() async {
     await FirebaseMessaging.instance.requestPermission(
@@ -28,7 +29,9 @@ class NotificationService {
     );
 
     const AndroidInitializationSettings androidSettings =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+    AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
     const InitializationSettings initializationSettings =
     InitializationSettings(
@@ -52,38 +55,30 @@ class NotificationService {
         AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("Foreground Notification");
-
-      if (message.notification != null) {
-        await _flutterLocalNotificationsPlugin.show(
-          message.hashCode,
-          message.notification!.title,
-          message.notification!.body,
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'high_importance_channel',
-              'High Importance Notifications',
-              channelDescription: 'Bus Notifications',
-              importance: Importance.max,
-              priority: Priority.high,
-              icon: '@mipmap/ic_launcher',
+    FirebaseMessaging.onMessage.listen(
+          (RemoteMessage message) async {
+        if (message.notification != null) {
+          await _flutterLocalNotificationsPlugin.show(
+            message.hashCode,
+            message.notification!.title,
+            message.notification!.body,
+            const NotificationDetails(
+              android: AndroidNotificationDetails(
+                'high_importance_channel',
+                'High Importance Notifications',
+                channelDescription: 'Bus Notifications',
+                importance: Importance.max,
+                priority: Priority.high,
+                icon: '@mipmap/ic_launcher',
+              ),
             ),
-          ),
-        );
-      }
-    });
+          );
+        }
+      },
+    );
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("Notification Clicked");
-    });
-
-    String? token = await FirebaseMessaging.instance.getToken();
-
-    print("================================");
-    print("FCM TOKEN");
-    print(token);
-    print("================================");
-
+    FirebaseMessaging.onMessageOpenedApp.listen(
+          (RemoteMessage message) {},
+    );
   }
 }

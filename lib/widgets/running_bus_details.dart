@@ -3,6 +3,7 @@ import '../models/bus.dart';
 
 class RunningBusDetails extends StatelessWidget {
   final Bus bus;
+
   const RunningBusDetails({
     super.key,
     required this.bus,
@@ -15,36 +16,59 @@ class RunningBusDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isWaiting = bus.status.toUpperCase().contains("WAITING");
-    final Color statusColor = isWaiting ? Colors.orange : Colors.green;
+    final bool isWaiting =
+    bus.status.toUpperCase().contains("WAITING");
+
+    final Color statusColor =
+    isWaiting ? Colors.orange : Colors.green;
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11,),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 11,
+          ),
           decoration: BoxDecoration(
-            color: statusColor.withOpacity(0.08),
+            color: statusColor.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: statusColor.withOpacity(0.15),
+            border: Border.all(
+              color: statusColor.withValues(alpha: 0.15),
             ),
           ),
           child: Row(
             children: [
-              Container(width: 34, height: 34,
+              Container(
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.10),
+                  color:
+                  statusColor.withValues(alpha: 0.10),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  isWaiting ? Icons.pause_circle_outline_rounded : Icons.directions_bus_rounded,
-                  size: 19, color: statusColor,),
+                  isWaiting
+                      ? Icons.pause_circle_outline_rounded
+                      : Icons.directions_bus_rounded,
+                  size: 19,
+                  color: statusColor,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(isWaiting ? "Bus is waiting at ${bus.currentStop}" : "Bus is currently near ${bus.currentStop}",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                    color: isWaiting ? Colors.orange.shade800 : Colors.green.shade800,
+                child: Text(
+                  isWaiting
+                      ? "Bus is waiting at ${bus.currentStop}"
+                      : "Bus is currently near ${bus.currentStop}",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: isWaiting
+                        ? Colors.orange.shade800
+                        : Colors.green.shade800,
                   ),
                 ),
               ),
@@ -52,41 +76,97 @@ class RunningBusDetails extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text("Live status",
+        const Text(
+          "Live status",
           style: TextStyle(
-            fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary,),
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: textPrimary,
+          ),
         ),
         const SizedBox(height: 10),
-        _detailRow("Current stop", bus.currentStop,),
-        _detailRow("Next stop", bus.nextStop,),
-        _detailRow("Speed", "${bus.speed} km/hr",),
-        _detailRow("Distance to next stop", "${bus.distanceToNextStop} km",),
+        _detailRow(
+          "Current stop",
+          bus.currentStop,
+        ),
+        _detailRow(
+          "Next stop",
+          bus.nextStop,
+        ),
+        _detailRow(
+          "Speed",
+          "${bus.speed} km/hr",
+        ),
+        _detailRow(
+          "Distance to next stop",
+          "${bus.distanceToNextStop} km",
+        ),
         const SizedBox(height: 5),
         const Divider(
-          height: 1, color: borderColor,),
+          height: 1,
+          color: borderColor,
+        ),
         const SizedBox(height: 16),
-        const Text("Your boarding stop",
+        const Text(
+          "Your boarding stop",
           style: TextStyle(
-            fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary,),
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: textPrimary,
+          ),
         ),
         const SizedBox(height: 10),
-        _detailRow("Stop", bus.boardingStop,),
-        _detailRow("ETA", bus.etaToBoardingStop, valueColor: primaryRed,),
-        _detailRow("Arrival", bus.busArrivalTimeAtBoardingStop, valueColor: primaryRed,),
+        _detailRow(
+          "Stop",
+          bus.boardingStop,
+        ),
+        _detailRow(
+          "ETA",
+          bus.etaToBoardingStop,
+          valueColor: primaryRed,
+        ),
+        _detailRow(
+          "Arrival",
+          bus.busArrivalTimeAtBoardingStop,
+          valueColor: primaryRed,
+        ),
         const SizedBox(height: 5),
-        const Divider(height: 1, color: borderColor,),
+        const Divider(
+          height: 1,
+          color: borderColor,
+        ),
         const SizedBox(height: 16),
-        const Text("Destination",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary,),
+        const Text(
+          "Destination",
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: textPrimary,
+          ),
         ),
         const SizedBox(height: 10),
-        _detailRow("Stop", bus.destinationStop,),
-        _detailRow("Remaining distance", "${bus.remainingDistanceToDestination} km",),
-        _detailRow("ETA", bus.etaToDestinationStop, valueColor: primaryRed,),
-        _detailRow("Arrival", bus.busArrivalTimeAtDestinationStop, valueColor: primaryRed,),
+        _detailRow(
+          "Stop",
+          bus.destinationStop,
+        ),
+        _detailRow(
+          "Remaining distance",
+          "${bus.remainingDistanceToDestination} km",
+        ),
+        _detailRow(
+          "ETA",
+          bus.etaToDestinationStop,
+          valueColor: primaryRed,
+        ),
+        _detailRow(
+          "Arrival",
+          bus.busArrivalTimeAtDestinationStop,
+          valueColor: primaryRed,
+        ),
       ],
     );
   }
+
   Widget _detailRow(
       String label,
       String value, {
@@ -97,19 +177,29 @@ class RunningBusDetails extends StatelessWidget {
         bottom: 10,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 2, child: Text(
-              label, style: const TextStyle(color: textSecondary, fontSize: 12,),
+            flex: 2,
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: textSecondary,
+                fontSize: 12,
+              ),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
-            flex: 3, child: Text(value,
+            flex: 3,
+            child: Text(
+              value,
               textAlign: TextAlign.right,
               style: TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w700, color: valueColor ?? textPrimary,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: valueColor ?? textPrimary,
               ),
             ),
           ),
