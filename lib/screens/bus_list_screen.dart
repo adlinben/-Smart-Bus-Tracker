@@ -130,9 +130,7 @@ class _BusListScreenState extends State<BusListScreen> {
   String _normalizeStatus(String status) {
     return status
         .trim()
-        .toUpperCase()
-        .replaceAll("-", "_")
-        .replaceAll(" ", "_");
+        .toUpperCase();
   }
 
   bool _isRunning(Bus bus) {

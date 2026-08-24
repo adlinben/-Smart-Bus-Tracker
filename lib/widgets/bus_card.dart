@@ -18,9 +18,7 @@ class BusCard extends StatelessWidget {
   String _normalizeStatus(String status) {
     return status
         .trim()
-        .toUpperCase()
-        .replaceAll("-", "_")
-        .replaceAll(" ", "_");
+        .toUpperCase();
   }
 
   @override
