@@ -9,6 +9,7 @@ import '../widgets/route_stops_widget.dart';
 import 'map_screen.dart';
 import '../repositories/notification_repository.dart';
 import '../services/notification_service.dart';
+import '../utils/eta_formatter.dart';
 
 class BusDetailsScreen extends StatefulWidget {
   final Bus bus;
@@ -647,6 +648,14 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                   fontWeight:
                   FontWeight.w800,
                   color: statusColor,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                "Arrives in ${formatEta(bus.etaToBoardingStop)}",
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: AppTheme.textSecondary,
                 ),
               ),
             ],
