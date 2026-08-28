@@ -7,21 +7,28 @@ class ApiService {
       String endpoint,
       Map<String, dynamic> body,
       ) async {
-    final response = await http.post(
+    final response = await http
+        .post(
       Uri.parse(ApiConstants.baseUrl + endpoint),
       headers: {
         "Content-Type": "application/json",
       },
       body: jsonEncode(body),
-    ).timeout(
+    )
+        .timeout(
       const Duration(seconds: 15),
     );
-
-    if (response.statusCode == 200) {
-      if (response.body.isEmpty) {
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300) {
+      if (response.body.trim().isEmpty) {
         return null;
       }
-      return jsonDecode(response.body);
+      final responseBody = response.body.trim();
+      try {
+        return jsonDecode(responseBody);
+      } catch (_) {
+        return responseBody;
+      }
     }
 
     throw Exception(
@@ -30,20 +37,28 @@ class ApiService {
   }
 
   Future<dynamic> get(String endpoint) async {
-    final response = await http.get(
+    final response = await http
+        .get(
       Uri.parse(ApiConstants.baseUrl + endpoint),
       headers: {
         "Content-Type": "application/json",
       },
-    ).timeout(
+    )
+        .timeout(
       const Duration(seconds: 15),
     );
 
-    if (response.statusCode == 200) {
-      if (response.body.isEmpty) {
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300) {
+      if (response.body.trim().isEmpty) {
         return null;
       }
-      return jsonDecode(response.body);
+      final responseBody = response.body.trim();
+      try {
+        return jsonDecode(responseBody);
+      } catch (_) {
+        return responseBody;
+      }
     }
 
     throw Exception(

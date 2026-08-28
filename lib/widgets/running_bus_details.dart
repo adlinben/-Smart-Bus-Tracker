@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/bus.dart';
+import '../utils/eta_formatter.dart';
 
 class RunningBusDetails extends StatelessWidget {
   final Bus bus;
@@ -23,8 +24,7 @@ class RunningBusDetails extends StatelessWidget {
     isWaiting ? Colors.orange : Colors.green;
 
     return Column(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: double.infinity,
@@ -45,8 +45,7 @@ class RunningBusDetails extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color:
-                  statusColor.withValues(alpha: 0.10),
+                  color: statusColor.withValues(alpha: 0.10),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -75,6 +74,7 @@ class RunningBusDetails extends StatelessWidget {
             ],
           ),
         ),
+
         const SizedBox(height: 16),
         const Text(
           "Live status",
@@ -84,28 +84,36 @@ class RunningBusDetails extends StatelessWidget {
             color: textPrimary,
           ),
         ),
+
         const SizedBox(height: 10),
+
         _detailRow(
           "Current stop",
           bus.currentStop,
         ),
+
         _detailRow(
           "Next stop",
           bus.nextStop,
         ),
+
         _detailRow(
           "Speed",
-          "${bus.speed} km/hr",
+          "${bus.speed.toStringAsFixed(1)} km/hr",
         ),
+
         _detailRow(
           "Distance to next stop",
-          "${bus.distanceToNextStop} km",
+          "${bus.distanceToNextStop.toStringAsFixed(1)} km",
         ),
+
         const SizedBox(height: 5),
+
         const Divider(
           height: 1,
           color: borderColor,
         ),
+
         const SizedBox(height: 16),
         const Text(
           "Your boarding stop",
@@ -115,14 +123,16 @@ class RunningBusDetails extends StatelessWidget {
             color: textPrimary,
           ),
         ),
+
         const SizedBox(height: 10),
+
         _detailRow(
           "Stop",
           bus.boardingStop,
         ),
         _detailRow(
           "ETA",
-          bus.etaToBoardingStop,
+          formatEta(bus.etaToBoardingStop),
           valueColor: primaryRed,
         ),
         _detailRow(
@@ -130,11 +140,14 @@ class RunningBusDetails extends StatelessWidget {
           bus.busArrivalTimeAtBoardingStop,
           valueColor: primaryRed,
         ),
+
         const SizedBox(height: 5),
+
         const Divider(
           height: 1,
           color: borderColor,
         ),
+
         const SizedBox(height: 16),
         const Text(
           "Destination",
@@ -144,20 +157,19 @@ class RunningBusDetails extends StatelessWidget {
             color: textPrimary,
           ),
         ),
+
         const SizedBox(height: 10),
+
         _detailRow(
           "Stop",
           bus.destinationStop,
         ),
         _detailRow(
-          "Remaining distance",
-          "${bus.remainingDistanceToDestination} km",
-        ),
-        _detailRow(
           "ETA",
-          bus.etaToDestinationStop,
+          formatEta(bus.etaToDestinationStop),
           valueColor: primaryRed,
         ),
+
         _detailRow(
           "Arrival",
           bus.busArrivalTimeAtDestinationStop,
@@ -190,7 +202,9 @@ class RunningBusDetails extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(width: 10),
+
           Expanded(
             flex: 3,
             child: Text(

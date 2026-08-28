@@ -1,37 +1,53 @@
 class RouteStop {
-  final String stopId;
   final String stopName;
-  final int stopOrder;
-  final String expectedArrivalText;
-  final String distanceAwayText;
-  final bool currentStop;
+  final double remainingDistance;
+  final int eta;
 
   const RouteStop({
-    required this.stopId,
     required this.stopName,
-    required this.stopOrder,
-    required this.expectedArrivalText,
-    required this.distanceAwayText,
-    required this.currentStop,
+    required this.remainingDistance,
+    required this.eta,
   });
 
-  factory RouteStop.fromJson(
-      Map<String, dynamic> json,
-      ) {
+  factory RouteStop.fromJson(Map<String, dynamic> json) {
     return RouteStop(
-      stopId: json['stopId']?.toString() ?? '',
-      stopName: json['stopName']?.toString() ?? '',
-      stopOrder: _toInt(json['stopOrder']),
-      expectedArrivalText: json['expectedArrivalText']?.toString() ?? '',
-      distanceAwayText: json['distanceAwayText']?.toString() ?? '',
-      currentStop: _toBool(json['currentStop']),
+      stopName: _toString(json['stopName']),
+      remainingDistance: _toDouble(json['remainingDistance']),
+      eta: _toInt(json['eta']),
     );
   }
-  String get eta {
-    return expectedArrivalText;
+  String get expectedArrivalText {
+    if (eta <= 0) {
+      return '';
+    }
+    return _formatEta(eta);
   }
-  String get remainingDistance {
-    return distanceAwayText;
+  String get distanceAwayText {
+    if (remainingDistance <= 0) {
+      return '';
+    }
+    return '${remainingDistance.toStringAsFixed(1)} km';
+  }
+  String get stopId => '';
+  int get stopOrder => 0;
+  bool get currentStop => false;
+  static String _toString(dynamic value) {
+    if (value == null) {
+      return '';
+    }
+    return value.toString();
+  }
+  static double _toDouble(dynamic value) {
+    if (value == null) {
+      return 0.0;
+    }
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is String) {
+      return double.tryParse(value.trim()) ?? 0.0;
+    }
+    return 0.0;
   }
   static int _toInt(dynamic value) {
     if (value == null) {
@@ -40,42 +56,41 @@ class RouteStop {
     if (value is int) {
       return value;
     }
-
     if (value is num) {
       return value.toInt();
     }
-
     if (value is String) {
       return int.tryParse(value.trim()) ?? 0;
     }
     return 0;
   }
-  static bool _toBool(dynamic value) {
-    if (value == null) {
-      return false;
+  static String _formatEta(int eta) {
+    if (eta <= 0) {
+      return '';
     }
-    if (value is bool) {
-      return value;
+    final int hours = eta ~/ 60;
+    final int minutes = eta % 60;
+    if (hours > 0) {
+      if (minutes > 0) {
+        return '${hours}h ${minutes}m';
+      }
+      return '${hours}h';
     }
-    if (value is String) {
-      return value.trim().toLowerCase() == 'true';
-    }
-    if (value is num) {
-      return value != 0;
-    }
-    return false;
+    return '${minutes} min';
   }
-
+  String get etaText {
+    return expectedArrivalText;
+  }
+  String get remainingDistanceText {
+    return distanceAwayText;
+  }
   @override
   String toString() {
     return '''
 RouteStop(
-  stopId: $stopId,
   stopName: $stopName,
-  stopOrder: $stopOrder,
-  expectedArrivalText: $expectedArrivalText,
-  distanceAwayText: $distanceAwayText,
-  currentStop: $currentStop,
+  remainingDistance: $remainingDistance,
+  eta: $eta
 )
 ''';
   }

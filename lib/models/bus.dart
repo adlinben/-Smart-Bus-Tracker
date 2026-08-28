@@ -60,16 +60,13 @@ class Bus {
       nextStop: _toString(json["nextStop"]),
       distanceToNextStop: _toDouble(json["distanceToNextStop"]),
       boardingStop: _toString(json["boardingStop"]),
-      remainingDistanceToBoardingStop:
-      _toDouble(json["remainingDistanceToBoardingStop"]),
-      etaToBoardingStop: _toString(json["boardingEta"]),
-      busArrivalTimeAtBoardingStop: _toString(json["boardingArrival"]),
+      remainingDistanceToBoardingStop: _toDouble(json["remainingDistanceToBoardingStop"]),
+      etaToBoardingStop: _toString(json["etaToBoardingStop"]),
+      busArrivalTimeAtBoardingStop: _toString(json["busArrivalTimeAtBoardingStop"]),
       destinationStop: _toString(json["destinationStop"]),
-      remainingDistanceToDestination:
-      _toDouble(json["destinationRemainingDistance"]),
-      etaToDestinationStop: _toString(json["destinationEta"]),
-      busArrivalTimeAtDestinationStop:
-      _toString(json["destinationArrival"]),
+      remainingDistanceToDestination: _toDouble(json["remainingDistanceToDestination"]),
+      etaToDestinationStop: _toString(json["etaToDestinationStop"]),
+      busArrivalTimeAtDestinationStop: _toString(json["busArrivalTimeAtDestinationStop"]),
       startingFrom: _toString(json["startingFrom"]),
       departureTime: _toString(json["departureTime"]),
       latitude: _toDouble(json["latitude"]),
@@ -78,41 +75,32 @@ class Bus {
       routeStops: _parseRouteStops(json["routeStops"]),
     );
   }
-
   static String _toString(dynamic value) {
     if (value == null) {
       return '';
     }
     return value.toString();
   }
-
   static double _toDouble(dynamic value) {
     if (value == null) {
       return 0.0;
     }
-
     if (value is num) {
       return value.toDouble();
     }
-
     if (value is String) {
       return double.tryParse(value) ?? 0.0;
     }
-
     return 0.0;
   }
-
   static List<RouteStop> _parseRouteStops(dynamic value) {
     if (value == null) {
       return [];
     }
-
     if (value is! List) {
       return [];
     }
-
     final List<RouteStop> stops = [];
-
     for (final item in value) {
       if (item is Map<String, dynamic>) {
         stops.add(
@@ -126,10 +114,8 @@ class Bus {
         );
       }
     }
-
     return stops;
   }
-
   @override
   String toString() {
     return '''

@@ -1,20 +1,32 @@
 String formatEta(String eta) {
-  final minutes = int.tryParse(eta) ?? 0;
+  if (eta.trim().isEmpty) {
+    return "--";
+  }
+
+  final int? minutes = int.tryParse(eta.trim());
+
+  if (minutes == null) {
+    return eta;
+  }
 
   if (minutes <= 0) {
     return "Arriving";
   }
 
-  final hours = minutes ~/ 60;
-  final remainingMinutes = minutes % 60;
-
-  if (hours > 0 && remainingMinutes > 0) {
-    return "$hours hr $remainingMinutes min";
+  if (minutes < 60) {
+    return "$minutes min";
   }
 
-  if (hours > 0) {
-    return "$hours hr";
+  final int hours = minutes ~/ 60;
+  final int remainingMinutes = minutes % 60;
+
+  if (remainingMinutes == 0) {
+    return hours == 1
+        ? "1 hr"
+        : "$hours hrs";
   }
 
-  return "$minutes min";
+  return hours == 1
+      ? "1 hr $remainingMinutes min"
+      : "$hours hrs $remainingMinutes min";
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/bus.dart';
+import '../models/route_stop.dart';
 import '../theme/app_theme.dart';
 
 class RouteStopsWidget extends StatelessWidget {
@@ -50,33 +51,33 @@ class RouteStopsWidget extends StatelessWidget {
       itemCount: bus.routeStops.length,
       itemBuilder: (context, index) {
         final stop = bus.routeStops[index];
-        final bool isLast = index == bus.routeStops.length - 1;
-        final bool isCurrent = stop.currentStop;
-        final String etaText = stop.expectedArrivalText.trim();
-        final bool isPassed =
-            !isCurrent && etaText.toUpperCase() == "PASSED";
-        final bool isFuture = !isCurrent && !isPassed;
+
+        final bool isLast =
+            index == bus.routeStops.length - 1;
 
         return _buildStop(
           stop: stop,
           index: index,
           isLast: isLast,
-          isCurrent: isCurrent,
-          isPassed: isPassed,
-          isFuture: isFuture,
         );
       },
     );
   }
 
   Widget _buildStop({
-    required dynamic stop,
+    required RouteStop stop,
     required int index,
     required bool isLast,
-    required bool isCurrent,
-    required bool isPassed,
-    required bool isFuture,
   }) {
+    final bool isCurrent =
+    _isCurrentStop(stop, index);
+
+    final bool isPassed =
+    _isPassedStop(stop, index);
+
+    final bool isFuture =
+        !isCurrent && !isPassed;
+
     final Color pointColor;
 
     if (isCurrent) {
@@ -87,12 +88,16 @@ class RouteStopsWidget extends StatelessWidget {
       pointColor = AppTheme.primaryRed;
     }
 
-    final String distanceText = stop.distanceAwayText.trim();
-    final bool hasDistance = distanceText.isNotEmpty;
+    final String distanceText =
+    stop.distanceAwayText.trim();
+
+    final bool hasDistance =
+        distanceText.isNotEmpty;
 
     return IntrinsicHeight(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment:
+        CrossAxisAlignment.stretch,
         children: [
           SizedBox(
             width: 36,
@@ -129,20 +134,26 @@ class RouteStopsWidget extends StatelessWidget {
                   Expanded(
                     child: Container(
                       width: 2,
-                      margin: const EdgeInsets.symmetric(
+                      margin:
+                      const EdgeInsets.symmetric(
                         vertical: 3,
                       ),
                       color: isPassed
-                          ? AppTheme.textMuted.withValues(alpha: 0.35)
+                          ? AppTheme.textMuted
+                          .withValues(alpha: 0.35)
                           : isCurrent
-                          ? AppTheme.running.withValues(alpha: 0.35)
-                          : AppTheme.primaryRed.withValues(alpha: 0.18),
+                          ? AppTheme.running
+                          .withValues(alpha: 0.35)
+                          : AppTheme.primaryRed
+                          .withValues(alpha: 0.18),
                     ),
                   ),
               ],
             ),
           ),
+
           const SizedBox(width: 10),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(
@@ -156,15 +167,19 @@ class RouteStopsWidget extends StatelessWidget {
                 ),
                 decoration: isCurrent
                     ? BoxDecoration(
-                  color: AppTheme.runningLight,
-                  borderRadius: BorderRadius.circular(11),
+                  color:
+                  AppTheme.runningLight,
+                  borderRadius:
+                  BorderRadius.circular(11),
                   border: Border.all(
-                    color: AppTheme.running.withValues(alpha: 0.25),
+                    color: AppTheme.running
+                        .withValues(alpha: 0.25),
                   ),
                 )
                     : null,
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Column(
@@ -174,9 +189,11 @@ class RouteStopsWidget extends StatelessWidget {
                           Text(
                             stop.stopName,
                             maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            overflow:
+                            TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: isCurrent ? 14 : 13,
+                              fontSize:
+                              isCurrent ? 14 : 13,
                               fontWeight: isCurrent
                                   ? FontWeight.w800
                                   : isPassed
@@ -189,10 +206,11 @@ class RouteStopsWidget extends StatelessWidget {
                                   : AppTheme.textPrimary,
                             ),
                           ),
+
                           const SizedBox(height: 4),
+
                           Text(
                             _getStopStatus(
-                              stop: stop,
                               isCurrent: isCurrent,
                               isPassed: isPassed,
                             ),
@@ -208,30 +226,42 @@ class RouteStopsWidget extends StatelessWidget {
                                   : AppTheme.textSecondary,
                             ),
                           ),
-                          if (isFuture && hasDistance) ...[
+
+                          if (isFuture &&
+                              hasDistance) ...[
                             const SizedBox(height: 4),
                             Row(
                               children: [
                                 const Icon(
-                                  Icons.near_me_outlined,
+                                  Icons
+                                      .near_me_outlined,
                                   size: 12,
-                                  color: AppTheme.textMuted,
+                                  color:
+                                  AppTheme.textMuted,
                                 ),
-                                const SizedBox(width: 3),
+                                const SizedBox(
+                                  width: 3,
+                                ),
                                 Flexible(
                                   child: Text(
                                     distanceText,
                                     maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
+                                    overflow:
+                                    TextOverflow
+                                        .ellipsis,
+                                    style:
+                                    const TextStyle(
                                       fontSize: 10,
-                                      color: AppTheme.textMuted,
+                                      color:
+                                      AppTheme
+                                          .textMuted,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                           ],
+
                           if (isCurrent) ...[
                             const SizedBox(height: 5),
                             Row(
@@ -239,18 +269,25 @@ class RouteStopsWidget extends StatelessWidget {
                                 Container(
                                   width: 7,
                                   height: 7,
-                                  decoration: const BoxDecoration(
-                                    color: AppTheme.running,
-                                    shape: BoxShape.circle,
+                                  decoration:
+                                  const BoxDecoration(
+                                    color:
+                                    AppTheme.running,
+                                    shape:
+                                    BoxShape.circle,
                                   ),
                                 ),
-                                const SizedBox(width: 5),
+                                const SizedBox(
+                                  width: 5,
+                                ),
                                 const Text(
                                   "Bus is here",
                                   style: TextStyle(
                                     fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppTheme.running,
+                                    fontWeight:
+                                    FontWeight.w700,
+                                    color:
+                                    AppTheme.running,
                                   ),
                                 ),
                               ],
@@ -259,6 +296,7 @@ class RouteStopsWidget extends StatelessWidget {
                         ],
                       ),
                     ),
+
                     if (isFuture)
                       _etaBadge(
                         stop.expectedArrivalText,
@@ -273,8 +311,48 @@ class RouteStopsWidget extends StatelessWidget {
     );
   }
 
+  bool _isCurrentStop(
+      RouteStop stop,
+      int index,
+      ) {
+    if (bus.currentStop.trim().isEmpty) {
+      return false;
+    }
+
+    return stop.stopName.trim().toLowerCase() ==
+        bus.currentStop.trim().toLowerCase();
+  }
+
+  bool _isPassedStop(
+      RouteStop stop,
+      int index,
+      ) {
+    if (!isRunning) {
+      return false;
+    }
+
+    final String current =
+    bus.currentStop.trim().toLowerCase();
+
+    if (current.isEmpty) {
+      return false;
+    }
+
+    final int currentIndex =
+    bus.routeStops.indexWhere(
+          (item) =>
+      item.stopName.trim().toLowerCase() ==
+          current,
+    );
+
+    if (currentIndex == -1) {
+      return false;
+    }
+
+    return index < currentIndex;
+  }
+
   String _getStopStatus({
-    required dynamic stop,
     required bool isCurrent,
     required bool isPassed,
   }) {
@@ -297,9 +375,7 @@ class RouteStopsWidget extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(
-        left: 8,
-      ),
+      margin: const EdgeInsets.only(left: 8),
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
         vertical: 5,
